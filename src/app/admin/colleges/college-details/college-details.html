@@ -1,0 +1,176 @@
+@if (loading()) {
+<div class="loading-state">Loading college...</div>
+} @else if (error()) {
+<div class="error-state">{{ error() }}</div>
+} @else if (college()) { @let c = college();
+<div class="details-shell" [style.--accent]="c?.color">
+  <div class="header-bar">
+    <a routerLink="/admin/colleges" class="back-link">Back</a>
+    <div class="title-wrap">
+      <h2
+        class="title has-gradient"
+        [style.background]="'linear-gradient(90deg,'+ (c?.color || '#6366f1') +', #8b5cf6)'"
+      >
+        {{ c?.name }}
+      </h2>
+      <!-- <span class="points-chip">Total Points: {{ totalPoints() }}</span> -->
+    </div>
+  </div>
+
+  <div class="detail-workspace">
+    <div class="standings-editor">
+      <div *ngIf="isAdmin() || isTm()" class="add-event-bar">
+    <button type="button" class="add-event-btn" (click)="openAddEventModal()">+ Add Event</button>
+      </div>
+
+  @if (showAddEventModal()) {
+  <div class="modal-backdrop" (click)="closeAddEventModal()">
+    <div class="modal-panel" (click)="$event.stopPropagation()">
+      <h3 class="modal-title">Add New Event</h3>
+      @if (isAdmin() || socioEvents().length) {
+      <select
+        class="add-event-input"
+        [value]="newStandingType()"
+        (change)="newStandingType.set($any($event.target).value)"
+      >
+        <option value="sports">Sports Standing</option>
+        <option value="socio">Socio Standing</option>
+      </select>
+      }
+      @if (newStandingType() === 'socio') {
+      <select
+        class="add-event-input"
+        [value]="newEventKey()"
+        (change)="newEventKey.set($any($event.target).value)"
+        (keydown.enter)="addEvent()"
+        autofocus
+      >
+        <option value="" disabled>Select socio event</option>
+        @for (event of socioEvents(); track event.id) {
+        <option [value]="event.name">{{ event.name }}</option>
+        }
+      </select>
+      } @else {
+      @if (addEventOptions().length) {
+      <select
+        class="add-event-input"
+        [value]="newEventKey()"
+        (change)="newEventKey.set($any($event.target).value)"
+        (keydown.enter)="addEvent()"
+        autofocus
+      >
+        <option value="" disabled>Select event</option>
+        <option *ngFor="let option of addEventOptions()" [value]="option.value">{{ option.label }}</option>
+      </select>
+      } @else {
+      <div class="empty-state" style="padding: 12px 0;">No sports are assigned to your account.</div>
+      }
+      }
+      <div class="modal-actions">
+        <button type="button" class="modal-btn cancel" (click)="closeAddEventModal()">Cancel</button>
+        <button type="button" class="modal-btn confirm" [disabled]="!newEventKey() || (newStandingType() === 'sports' && !addEventOptions().length)" (click)="addEvent()">Add Event</button>
+      </div>
+    </div>
+  </div>
+  }
+
+      <form [formGroup]="form" (ngSubmit)="save()" class="groups-form">
+    @for (group of groupedEvents(); track group.category) {
+    <div class="category-panel" [class.expanded]="isExpanded(group.category)">
+      <button
+        type="button"
+        class="category-toggle"
+        (click)="toggleCategory(group.category)"
+        [attr.aria-expanded]="isExpanded(group.category)"
+      >
+        <span class="cat-name">{{ group.category }}</span>
+        <span class="meta">{{ group.events.length }} events</span>
+        <span class="chevron" [class.rotate]="isExpanded(group.category)"
+          >⌄</span
+        >
+      </button>
+      @if (isExpanded(group.category)) {
+      <div class="event-grid">
+        @for (ev of group.events; track ev.key) {
+        <div
+          class="event-card"
+          [ngClass]="{
+                      'gold-card': currentMedal(form.get(ev.key)?.value, ev.data.playerCount) === 'gold',
+                      'silver-card': currentMedal(form.get(ev.key)?.value, ev.data.playerCount) === 'silver',
+                      'bronze-card': currentMedal(form.get(ev.key)?.value, ev.data.playerCount) === 'bronze',
+                      'empty-card': currentMedal(form.get(ev.key)?.value, ev.data.playerCount) === 'none'
+                    }"
+        >
+          <h3 class="event-title">{{ ev.key }}</h3>
+          <button
+            *ngIf="isAdmin() || (isTm() && isAssignedSport(ev.data))"
+            type="button"
+            class="delete-event-btn"
+            (click)="removeEvent(ev.key)"
+            [attr.aria-label]="'Delete ' + ev.key + ' event'"
+          >
+            Delete
+          </button>
+          <div class="points-field">
+            <label>Points</label>
+            <input type="number" [formControlName]="ev.key" readonly />
+          </div>
+          <div class="medal-buttons">
+            <button
+              type="button"
+              (click)="setMedal(ev.key, 'gold')"
+              [class.inactive]="currentMedal(form.get(ev.key)?.value, ev.data.playerCount) !== 'gold'"
+              class="medal-btn gold"
+            >
+              🥇 5
+            </button>
+            <button
+              type="button"
+              (click)="setMedal(ev.key, 'silver')"
+              [class.inactive]="currentMedal(form.get(ev.key)?.value, ev.data.playerCount) !== 'silver'"
+              class="medal-btn silver"
+            >
+              🥈 3
+            </button>
+            <button
+              type="button"
+              (click)="setMedal(ev.key, 'bronze')"
+              [class.inactive]="currentMedal(form.get(ev.key)?.value, ev.data.playerCount) !== 'bronze'"
+              class="medal-btn bronze"
+            >
+              🥉 1
+            </button>
+            <button
+              type="button"
+              (click)="setMedal(ev.key, 'none')"
+              [class.inactive]="currentMedal(form.get(ev.key)?.value, ev.data.playerCount) !== 'none'"
+              class="medal-btn clear"
+            >
+              ✕
+            </button>
+          </div>
+          <p class="players">Players: {{ ev.data.playerCount }}</p>
+        </div>
+        }
+      </div>
+      }
+    </div>
+    } @if (saving()) {
+    <div class="saving">Saving...</div>
+    }
+      </form>
+    </div>
+
+    <aside class="schedule-reference">
+      <div class="schedule-reference-header">
+        <div>
+          <h3>Schedule Reference</h3>
+          <p>Use the public schedule while consolidating this college's standings.</p>
+        </div>
+        <a href="/schedule" target="_blank" rel="noopener">Open</a>
+      </div>
+      <iframe src="/schedule" title="Public game schedule"></iframe>
+    </aside>
+  </div>
+</div>
+}

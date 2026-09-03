@@ -1,0 +1,112 @@
+.downloads-shell {
+  max-width: 52rem;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  border-top: 4px solid #f59e0b;
+  background: #fff;
+}
+
+header h2,
+header p {
+  margin: 0;
+}
+
+.eyebrow {
+  color: #b45309;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+h2 {
+  margin-top: 0.3rem;
+  color: #1e293b;
+  font-size: 1.8rem;
+  font-weight: 800;
+}
+
+.intro,
+.status {
+  margin-top: 0.45rem;
+  color: #64748b;
+}
+
+.download-list {
+  display: grid;
+  gap: 0.65rem;
+  margin-top: 1.5rem;
+}
+
+.download-item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.9rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+.file-mark {
+  display: grid;
+  width: 2.7rem;
+  height: 2.7rem;
+  place-items: center;
+  border-radius: 5px;
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 0.62rem;
+  font-weight: 800;
+}
+
+.file-details {
+  min-width: 0;
+}
+
+.file-details h3,
+.file-details p {
+  margin: 0;
+}
+
+.file-details h3 {
+  overflow-wrap: anywhere;
+  color: #334155;
+  font-size: 0.95rem;
+}
+
+.file-details p {
+  margin-top: 0.2rem;
+  color: #64748b;
+  font-size: 0.78rem;
+}
+
+.download-button {
+  border-radius: 6px;
+  padding: 0.55rem 0.75rem;
+  background: #0369a1;
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.error {
+  color: #b91c1c;
+}
+
+@media (max-width: 34rem) {
+  .downloads-shell {
+    margin: 1rem auto;
+    padding: 1rem;
+  }
+
+  .download-item {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .download-button {
+    grid-column: 1 / -1;
+    text-align: center;
+  }
+}

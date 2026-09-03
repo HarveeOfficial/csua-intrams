@@ -1,0 +1,45 @@
+.standings-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.college-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+  align-items: stretch;
+}
+
+.college-card {
+  min-width: 0;
+}
+
+.college-card h3 {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 1280px) {
+  .college-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .college-grid {
+    grid-template-columns: 1fr;
+  }
+}
+/* Ensure all college cards have equal height */
+.col-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Fallback if auto-rows-fr utility not available */
+.col-card .mt-auto {
+  margin-top: auto;
+}

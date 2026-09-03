@@ -1,0 +1,28 @@
+<section class="downloads-shell">
+  <header>
+    <p class="eyebrow">CSUA Intramurals</p>
+    <h2>Forms and Downloads</h2>
+    <p class="intro">Official documents and resources for the intramural games.</p>
+  </header>
+
+  @if (loading()) {
+    <p class="status">Loading downloads...</p>
+  } @else if (error()) {
+    <p class="error">{{ error() }}</p>
+  } @else if (!files().length) {
+    <p class="status">No documents are available yet.</p>
+  } @else {
+    <div class="download-list">
+      @for (file of files(); track file.name) {
+        <article class="download-item">
+          <div class="file-mark" aria-hidden="true">FILE</div>
+          <div class="file-details">
+            <h3>{{ file.name }}</h3>
+            <p>{{ formatSize(file.size) }} | Updated {{ file.uploadedAt * 1000 | date:'mediumDate' }}</p>
+          </div>
+          <a [href]="file.url" class="download-button" download>Download</a>
+        </article>
+      }
+    </div>
+  }
+</section>

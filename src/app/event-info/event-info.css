@@ -1,0 +1,166 @@
+.event-info-shell {
+  max-width: 60rem;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  border-top: 4px solid #f59e0b;
+  background: #fff;
+}
+
+header h2,
+header p {
+  margin: 0;
+}
+
+.eyebrow {
+  color: #b45309;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+h2 {
+  margin-top: 0.3rem;
+  color: #1e293b;
+  font-size: 1.8rem;
+  font-weight: 800;
+}
+
+.intro {
+  margin-top: 0.45rem;
+  color: #64748b;
+}
+
+.tab-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.tab-bar button {
+  padding: 0.6rem 1rem;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+
+.tab-bar button:hover {
+  color: #b45309;
+}
+
+.tab-bar button.active {
+  color: #b45309;
+  border-bottom-color: #f59e0b;
+}
+
+.event-group {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.event-group:first-of-type {
+  margin-top: 1.5rem;
+}
+
+.office-mission {
+  margin: 0 0 1.25rem;
+  color: #475569;
+  line-height: 1.6;
+}
+
+.office-block {
+  margin-bottom: 1.5rem;
+}
+
+.office-block h4 {
+  margin: 0 0 0.5rem;
+  color: #334155;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.office-list,
+.office-contact {
+  margin: 0;
+  padding-left: 1.1rem;
+  color: #334155;
+  line-height: 1.7;
+}
+
+.office-contact {
+  list-style: none;
+  padding-left: 0;
+}
+
+.office-contact strong {
+  color: #0f172a;
+}
+
+.event-group h3 {
+  margin: 0 0 1rem;
+  color: #0f172a;
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.table-wrap {
+  margin-bottom: 1.75rem;
+}
+
+.table-wrap h4 {
+  margin: 0 0 0.5rem;
+  color: #334155;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+thead th {
+  padding: 0.6rem 0.75rem;
+  border-bottom: 2px solid #e2e8f0;
+  background: #f8fafc;
+  color: #475569;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+tbody td {
+  padding: 0.55rem 0.75rem;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+}
+
+tbody tr:hover {
+  background: #fffbeb;
+}
+
+@media (max-width: 34rem) {
+  .event-info-shell {
+    margin: 1rem auto;
+    padding: 1rem;
+  }
+
+  table {
+    font-size: 0.78rem;
+  }
+
+  thead th,
+  tbody td {
+    padding: 0.45rem 0.5rem;
+  }
+}

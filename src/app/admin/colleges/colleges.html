@@ -1,0 +1,46 @@
+<div class="flex items-center justify-between mb-6 gap-4">
+  <h2 class="text-3xl font-extrabold text-gray-800">Colleges</h2>
+  <a *ngIf="isAdmin()" routerLink="/admin/colleges/new" class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-indigo-700">+ New college</a>
+</div>
+
+@if (!(colleges().length)) {
+<div class="text-gray-400 italic text-lg animate-pulse">
+  Loading or no colleges yet...
+</div>
+} @else {
+
+<div class="standings-layout">
+  <div class="college-grid">
+    @for (c of colleges(); track $index) {
+
+  <a
+    [routerLink]="['/admin/colleges', c.id]"
+    class="college-card group rounded-2xl border border-gray-200 p-6 bg-white hover:shadow-xl transition-transform transform hover:-translate-y-1 hover:scale-105 h-full flex flex-col"
+    [style.borderColor]="c.color"
+  >
+    <div class="flex justify-between items-start mb-4">
+      <h3 class="text-xl font-semibold" [style.color]="c.color">
+        {{ c.name }}
+      </h3>
+      <span
+        class="text-xs font-bold px-3 py-1 rounded-full tracking-wide"
+        [style.background]="c.color"
+        [style.color]="'white'"
+        [title]="c.id"
+      >
+        {{ acronym(c.name) }}
+      </span>
+    </div>
+
+    <div class="flex-1 flex items-end justify-between mt-4 pt-">
+      <span class="text-gray-600 font-medium">Total Points:</span>
+      <span class="text-gray-900 font-bold text-lg">{{ totalPoints(c) }}</span>
+    </div>
+  </a>
+
+    }
+  </div>
+
+</div>
+
+}

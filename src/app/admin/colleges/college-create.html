@@ -1,0 +1,37 @@
+<div class="create-shell">
+  <div class="create-header">
+    <div>
+      <a routerLink="/admin/colleges" class="back-link">Back to colleges</a>
+      <h2>Create College</h2>
+      <p>Add a college to the standings and admin dashboard.</p>
+    </div>
+  </div>
+
+  @if (error()) {
+    <div class="error-box">{{ error() }}</div>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="create-form">
+    <label>
+      College ID
+      <input formControlName="id" placeholder="cics" autocomplete="off" />
+      <small>Letters, numbers, hyphens, or underscores. Uppercase letters are converted to lowercase.</small>
+    </label>
+    <label>
+      College name
+      <input formControlName="name" placeholder="College of Information and Computing Sciences" />
+    </label>
+    <label>
+      Brand color
+      <span class="color-input"><input type="color" formControlName="color" /><input formControlName="color" /></span>
+    </label>
+    <label>
+      Photo URL <span class="optional">optional</span>
+      <input formControlName="photo_url" placeholder="https://example.com/logo.png" />
+    </label>
+    <div class="form-actions">
+      <a routerLink="/admin/colleges" class="cancel-button">Cancel</a>
+      <button type="submit" [disabled]="saving()">{{ saving() ? 'Creating...' : 'Create college' }}</button>
+    </div>
+  </form>
+</div>

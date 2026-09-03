@@ -1,0 +1,52 @@
+<section class="files-shell">
+  <header>
+    <h2>Downloadable Files</h2>
+    <p>Upload documents and resources for users to download.</p>
+  </header>
+
+  <div class="upload-panel">
+    <label class="file-picker">
+      <span>Select a file</span>
+      <input type="file" (change)="onFileSelected($event)" [disabled]="uploading()" />
+    </label>
+    @if (selectedFile()) {
+      <span class="selected-file">{{ selectedFile()!.name }} ({{ formatSize(selectedFile()!.size) }})</span>
+    }
+    <button type="button" class="upload-button" (click)="upload()" [disabled]="!selectedFile() || uploading()">
+      {{ uploading() ? 'Uploading...' : 'Upload file' }}
+    </button>
+  </div>
+
+  @if (loading()) {
+    <p class="status">Loading files...</p>
+  } @else if (!files().length) {
+    <p class="status">No files have been uploaded yet.</p>
+  } @else {
+    <div class="files-table-wrap">
+      <table>
+        <thead>
+          <tr><th>File</th><th>Size</th><th>Uploaded</th><th class="actions">Actions</th></tr>
+        </thead>
+        <tbody>
+          @for (file of files(); track file.name) {
+            <tr>
+              <td class="file-name">{{ file.name }}</td>
+              <td>{{ formatSize(file.size) }}</td>
+              <td>{{ file.uploadedAt * 1000 | date:'mediumDate' }}</td>
+              <td class="actions">
+                <a class="download-link" [href]="file.url" download>Download</a>
+                <button type="button" class="delete-button" (click)="deleteFile(file)" [disabled]="deleting() === file.name">
+                  {{ deleting() === file.name ? 'Deleting...' : 'Delete' }}
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+</section>

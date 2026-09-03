@@ -1,0 +1,18 @@
+.create-shell { max-width: 42rem; margin: 0 auto; }
+.create-header { margin-bottom: 1.5rem; }
+.back-link { color: #475569; font-size: .9rem; }
+h2 { margin: .75rem 0 .25rem; color: #1e293b; font-size: 1.8rem; font-weight: 800; }
+p { color: #64748b; margin: 0; }
+.create-form { display: grid; gap: 1.15rem; padding: 1.5rem; border: 1px solid #e2e8f0; border-radius: 1rem; background: #fff; box-shadow: 0 10px 30px #0f172a12; }
+label { display: grid; gap: .4rem; color: #334155; font-weight: 700; }
+input { width: 100%; box-sizing: border-box; border: 1px solid #cbd5e1; border-radius: .55rem; padding: .7rem .8rem; font: inherit; font-weight: 400; }
+input:focus { outline: 2px solid #6366f1; outline-offset: 1px; }
+small, .optional { color: #64748b; font-size: .78rem; font-weight: 400; }
+.color-input { display: grid; grid-template-columns: 3rem 1fr; gap: .6rem; align-items: center; }
+.color-input input[type='color'] { height: 2.7rem; padding: .2rem; }
+.form-actions { display: flex; justify-content: flex-end; gap: .7rem; margin-top: .5rem; }
+.cancel-button, button { border-radius: .55rem; padding: .7rem 1rem; font-weight: 700; text-decoration: none; }
+.cancel-button { color: #475569; background: #f1f5f9; }
+button { border: 0; color: white; background: #4f46e5; cursor: pointer; }
+button:disabled { cursor: wait; opacity: .6; }
+.error-box { margin-bottom: 1rem; padding: .8rem 1rem; color: #991b1b; border-radius: .55rem; background: #fee2e2; }

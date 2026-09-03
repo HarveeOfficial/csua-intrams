@@ -1,0 +1,420 @@
+/* Modernized styling for standings page */
+
+:host {
+  display: block;
+  --card-bg: linear-gradient(145deg, #ffffffee 0%, #f5f7ffdd 100%);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.4);
+  --radius-xl: 1.25rem;
+  --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.page-shell {
+  background: radial-gradient(circle at 25% 15%, #eef2ff, #f8fafc 60%);
+  animation: fadeIn 0.6s ease;
+}
+
+/* Logo marquee */
+.logo-marquee {
+  position: relative;
+  overflow: hidden;
+  border-radius: 999px;
+  padding: 0.85rem 0; /* increased height */
+  margin-bottom: 1.5rem;
+  background: linear-gradient(90deg, #6366f11a, #8b5cf61a);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+}
+.logo-marquee:before,
+.logo-marquee:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 60px;
+  pointer-events: none;
+  z-index: 2;
+}
+.logo-marquee:before {
+  left: 0;
+  background: linear-gradient(90deg, #f8fafc, rgba(248, 250, 252, 0));
+}
+.logo-marquee:after {
+  right: 0;
+  background: linear-gradient(270deg, #f8fafc, rgba(248, 250, 252, 0));
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  gap: 3rem; /* more spacing for larger logos */
+  will-change: transform;
+  animation: marqueeScroll 42s linear infinite; /* slow slightly for larger visuals */
+}
+.logo-item {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.logo-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px -2px rgba(0, 0, 0, 0.2);
+  transition: transform 0.4s;
+}
+.logo-item img:hover {
+  transform: scale(1.15) rotate(-4deg);
+}
+@keyframes marqueeScroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+@media (max-width: 640px) {
+  .marquee-track {
+    animation-duration: 32s;
+    gap: 1.5rem;
+  }
+  .logo-item {
+    width: 64px;
+    height: 64px;
+  }
+  .marquee-track {
+    gap: 2.25rem;
+    animation-duration: 46s;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.gradient-title {
+  background: linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  letter-spacing: 0.5px;
+}
+
+.sub-gradient-title {
+  background: linear-gradient(90deg, #f59e0b, #f97316, #ef4444);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.modern-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  border: var(--glass-border);
+  box-shadow: 0 4px 20px -4px rgba(99, 102, 241, 0.15),
+    0 10px 40px -10px rgba(139, 92, 246, 0.15);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  margin-top: 1.5rem;
+}
+
+.modern-card table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.table-modern thead th {
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  backdrop-filter: blur(10px);
+}
+
+tbody tr {
+  transition: var(--transition);
+}
+tbody tr:hover {
+  box-shadow: inset 0 0 0 9999px rgba(99, 102, 241, 0.03);
+}
+
+/* Disable hover highlight for ranking tables */
+.no-hover tbody tr:hover {
+  background: inherit !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+/* Distinct second place highlight */
+.rank-row-2 {
+  background: linear-gradient(90deg, #f1f5f9, #e2e8f0) !important;
+  box-shadow: inset 0 0 0 9999px rgba(148, 163, 184, 0.08);
+  position: relative;
+}
+.rank-row-2::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    135deg,
+    rgba(203, 213, 225, 0.35) 0%,
+    rgba(148, 163, 184, 0.15) 60%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  mix-blend-mode: overlay;
+}
+
+.rank-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #e2e8f0, #f8fafc);
+  color: #334155;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08), 0 4px 12px -2px rgba(0, 0, 0, 0.05);
+  position: relative;
+}
+.rank-1 {
+  background: linear-gradient(145deg, #fcd34d, #fbbf24);
+  color: #78350f;
+}
+.rank-2 {
+  background: linear-gradient(145deg, #e2e8f0, #cbd5e1);
+  color: #334155;
+}
+.rank-3 {
+  background: linear-gradient(145deg, #fdba74, #fb923c);
+  color: #7c2d12;
+}
+
+.pill {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #4338ca;
+}
+
+.toolbar {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.toolbar a,
+.toolbar button {
+  transition: var(--transition);
+}
+.toolbar a:hover,
+.toolbar button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px -6px rgba(0, 0, 0, 0.15);
+}
+
+/* Count animation flash */
+.count-flash {
+  animation: countPulse 1.15s ease;
+}
+@keyframes countPulse {
+  0% {
+    background: rgba(99, 102, 241, 0.18);
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.45);
+  }
+  30% {
+    background: rgba(139, 92, 246, 0.28);
+    box-shadow: 0 0 0 8px rgba(139, 92, 246, 0);
+  }
+  65% {
+    background: rgba(139, 92, 246, 0.12);
+  }
+  100% {
+    background: transparent;
+    box-shadow: none;
+  }
+}
+/* Trend + pop styling */
+.count-up {
+  color: #166534 !important;
+}
+.count-down {
+  color: #991b1b !important;
+}
+.count-pop {
+  animation: countPopScale 0.85s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes countPopScale {
+  0% {
+    transform: scale(0.7) translateY(-8%);
+    filter: brightness(1.15);
+  }
+  35% {
+    transform: scale(1.18) translateY(-3%);
+  }
+  60% {
+    transform: scale(0.94) translateY(0);
+  }
+  85% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+    filter: none;
+  }
+}
+
+.count-animating {
+  will-change: transform;
+  position: relative;
+}
+.count-animating::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+/* Scroll improvements */
+.modern-card::-webkit-scrollbar {
+  height: 8px;
+}
+.modern-card::-webkit-scrollbar-track {
+  background: transparent;
+}
+.modern-card::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+.modern-card::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Responsive tweaks */
+@media (max-width: 640px) {
+  :host {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .modern-card {
+    width: 100%;
+    min-width: 0;
+    margin-top: 1rem;
+    border-radius: 0.9rem;
+  }
+
+  .rank-badge {
+    width: 1.9rem;
+    height: 1.9rem;
+    font-size: 0.75rem;
+  }
+  .hide-sm {
+    display: none;
+  }
+
+  /* Stack tables into cards */
+  .stack-mobile thead {
+    display: none;
+  }
+  .stack-mobile tbody tr {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.85rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.9rem;
+    background: linear-gradient(145deg, #ffffff, #f1f5f9);
+    box-shadow: 0 4px 12px -4px rgba(0, 0, 0, 0.08);
+  }
+  .stack-mobile tbody tr:last-child {
+    margin-bottom: 0;
+  }
+  .stack-mobile tbody tr td {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    gap: 0.35rem;
+    padding: 0.4rem 0.35rem !important;
+    font-size: 0.75rem;
+    border: none;
+  }
+  .stack-mobile tbody tr td[data-label]::before {
+    content: attr(data-label);
+    font-size: 0.6rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #64748b;
+    background: #eef2ff;
+    padding: 0.15rem 0.4rem;
+    border-radius: 6px;
+  }
+  .stack-mobile tbody tr td[data-label="College"]::before,
+  .stack-mobile tbody tr td[data-label="Rank"]::before {
+    background: #f1f5f9;
+  }
+  .stack-mobile tbody tr td:first-child {
+    grid-column: 1 / 2;
+  }
+  .stack-mobile tbody tr td[data-label="College"] {
+    grid-column: 1 / -1;
+    font-weight: 600;
+    padding-top: 0.6rem !important;
+    overflow-wrap: anywhere;
+  }
+  .stack-mobile tbody tr td[data-label="College"] img {
+    width: 2rem;
+    height: 2rem;
+  }
+  .stack-mobile tbody tr td[data-label="Points"],
+  .stack-mobile tbody tr td[data-label="Total"] {
+    font-weight: 700;
+    color: #4338ca;
+  }
+  .modern-card {
+    padding: 0.5rem 0.35rem;
+  }
+  .logo-marquee {
+    padding: 0.65rem 0;
+  }
+}
+
+/* Medium breakpoint improvements */
+@media (min-width: 641px) and (max-width: 900px) {
+  .page-shell {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .modern-card {
+    border-radius: 1rem;
+  }
+  .stack-mobile tbody tr td {
+    font-size: 0.8rem;
+  }
+}
+
+/* Larger screen enhancements */
+@media (min-width: 1000px) {
+  .table-modern tbody tr:hover {
+    transform: translateY(-2px);
+  }
+}

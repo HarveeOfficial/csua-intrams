@@ -1,0 +1,206 @@
+<div class="sports-shell">
+  <div class="header-row">
+    <h2 class="title">Events</h2>
+  </div>
+
+  <div class="sports-tabs" role="tablist" aria-label="Sports administration">
+    <button type="button" class="sports-tab" [class.active]="activeTab() === 'sports'" (click)="activeTab.set('sports')" role="tab">Events</button>
+    <button type="button" class="sports-tab" [class.active]="activeTab() === 'users'" (click)="activeTab.set('users')" role="tab">User Accounts</button>
+  </div>
+
+  @if (activeTab() === 'sports') {
+  <div class="add-sport-bar">
+    <select
+      class="add-sport-input standing-type-select"
+      [value]="newStandingType()"
+      (change)="newStandingType.set($any($event.target).value)"
+      aria-label="Standing type"
+    >
+      <option value="sports">Sports</option>
+      <option value="socio">Socio</option>
+    </select>
+    <input
+      type="text"
+      class="add-sport-input"
+      [placeholder]="newStandingType() === 'sports' ? 'New sport name (e.g. Volleyball)' : 'New socio event name (e.g. Cultural Dance)'"
+      required
+      [value]="newSportName()"
+      (input)="newSportName.set($any($event.target).value)"
+      (keydown.enter)="addSport()"
+    />
+    @if (newStandingType() === 'sports') {
+    <input
+      type="number"
+      min="1"
+      class="add-sport-input"
+      style="max-width: 120px;"
+      [value]="newSportPlayerCount()"
+      (input)="newSportPlayerCount.set(+($any($event.target).value || 1))"
+      (keydown.enter)="addSport()"
+      aria-label="Players per sport"
+      required
+    />
+    }
+    <button
+      type="button"
+      class="add-sport-btn"
+      [disabled]="saving() || !newSportName().trim()"
+      (click)="addSport()"
+      >
+      {{ newStandingType() === 'sports' ? '+ Add Sport' : '+ Add Socio Event' }}
+    </button>
+  </div>
+
+  @if (loading()) {
+  <div class="loading-state">Loading sports...</div>
+  } @else if (!sports().length) {
+  <div class="empty-state">No sports yet. Add one above before creating user accounts.</div>
+  } @else {
+  <div class="sports-table-wrap">
+    <table class="sports-table">
+      <thead>
+        <tr><th>Name</th><th class="actions-col">Actions</th></tr>
+      </thead>
+      <tbody>
+        @for (s of sports(); track s.id) {
+        <tr>
+          @if (editingId() === s.id) {
+          <td>
+            <input type="text" class="sport-edit-input" [value]="editingName()" (input)="editingName.set($any($event.target).value)" (keydown.enter)="saveEdit(s)" />
+            <input type="number" min="1" class="sport-edit-input" style="max-width: 100px; margin-top: 8px;" [value]="editingPlayerCount()" (input)="editingPlayerCount.set(+($any($event.target).value || 1))" (keydown.enter)="saveEdit(s)" aria-label="Players per sport" />
+          </td>
+          <td class="actions-col"><div class="sport-actions"><button type="button" class="sport-btn save" [disabled]="saving()" (click)="saveEdit(s)">Save</button><button type="button" class="sport-btn cancel" (click)="cancelEdit()">Cancel</button></div></td>
+          } @else {
+          <td class="sport-name"><div>{{ s.name }}</div><small>Players: {{ s.playerCount || 1 }}</small></td>
+          <td class="actions-col"><div class="sport-actions"><button type="button" class="sport-btn edit" (click)="startEdit(s)">Edit</button><button type="button" class="sport-btn delete" [disabled]="saving()" (click)="deleteSport(s)">Delete</button></div></td>
+          }
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  }
+
+  @if (standingEvents().length) {
+  <section class="socio-events-panel">
+    <div>
+      <h3>Socio Events</h3>
+      <p>These events are separate from sports standings.</p>
+    </div>
+    <div class="sports-table-wrap">
+      <table class="sports-table">
+        <thead><tr><th>Name</th><th class="actions-col">Actions</th></tr></thead>
+        <tbody>
+          @for (event of standingEvents(); track event.id) {
+          <tr>
+            @if (editingSocioEventId() === event.id) {
+            <td><input type="text" class="sport-edit-input" [value]="editingSocioEventName()" (input)="editingSocioEventName.set($any($event.target).value)" (keydown.enter)="saveSocioEdit(event)" /></td>
+            <td><span class="standing-badge socio">Socio</span></td>
+            <td class="actions-col"><div class="sport-actions"><button type="button" class="sport-btn save" [disabled]="saving()" (click)="saveSocioEdit(event)">Save</button><button type="button" class="sport-btn cancel" (click)="cancelSocioEdit()">Cancel</button></div></td>
+            } @else {
+            <td class="sport-name">{{ event.name }}</td>
+            <!-- <td><span class="standing-badge socio">Socio</span></td> -->
+            <td class="actions-col"><div class="sport-actions"><button type="button" class="sport-btn edit" (click)="startSocioEdit(event)">Edit</button><button type="button" class="sport-btn delete" [disabled]="saving()" (click)="deleteSocioEvent(event)">Delete</button></div></td>
+            }
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+  }
+  } @else {
+  <div class="user-create-panel">
+    <div>
+      <h3>Create user account</h3>
+      <p>Assign a Tournament Manager account to sports, socio events, or both.</p>
+    </div>
+      @if (!sports().length && !standingEvents().length) {
+      <div class="empty-state">Create a sport or socio event first before creating an account.</div>
+    } @else {
+    <div class="user-form">
+      <label>Full name<input type="text" placeholder="Tournament Manager name" required [value]="newUserName()" (input)="newUserName.set($any($event.target).value)" /></label>
+      <label>Email<input type="email" placeholder="sports@intrams.com" required [value]="newUserEmail()" (input)="newUserEmail.set($any($event.target).value)" /></label>
+      <label>Password<input type="password" minlength="8" placeholder="At least 8 characters" required [value]="newUserPassword()" (input)="newUserPassword.set($any($event.target).value)" /></label>
+      <fieldset class="sport-picker">
+        <legend>Assigned Sports</legend>
+        <input
+          type="search"
+          class="sport-search-input"
+          placeholder="Search sports..."
+          [value]="newUserSportSearch()"
+          (input)="newUserSportSearch.set($any($event.target).value)"
+          aria-label="Search sports to assign"
+        />
+        @for (sport of filteredSports(newUserSportSearch()); track sport.id) {
+        <label class="sport-option"><input type="checkbox" [checked]="selectedSportIds().includes(sport.id)" (change)="toggleSport(sport.id, $any($event.target).checked)" />{{ sport.name }}</label>
+        }
+        @if (!filteredSports(newUserSportSearch()).length) { <span class="sport-search-empty">No matching sports.</span> }
+      </fieldset>
+      <fieldset class="sport-picker">
+        <legend>Assigned socio events</legend>
+        <input
+          type="search"
+          class="sport-search-input"
+          placeholder="Search socio events..."
+          [value]="newUserSocioSearch()"
+          (input)="newUserSocioSearch.set($any($event.target).value)"
+          aria-label="Search socio events to assign"
+        />
+        @for (event of filteredSocioEvents(newUserSocioSearch()); track event.id) {
+        <label class="sport-option"><input type="checkbox" [checked]="selectedSocioEventIds().includes(event.id)" (change)="toggleSocioEvent(event.id, $any($event.target).checked)" />{{ event.name }}</label>
+        }
+        @if (!filteredSocioEvents(newUserSocioSearch()).length) { <span class="sport-search-empty">No matching socio events.</span> }
+      </fieldset>
+    </div>
+    <button type="button" class="add-sport-btn create-user-btn" [disabled]="saving() || !canCreateUser()" (click)="createUser()">+ Create User Account</button>
+    }
+  </div>
+
+  @if (createdUser()) {
+  <div class="tm-credentials-banner">
+    <strong>Account created with sports: {{ createdUser()!.sportNames.join(', ') || 'None' }}; socio events are assigned below in the account list.</strong>
+    <div class="tm-credentials-row"><span class="tm-label">Name:</span><code class="tm-value">{{ createdUser()!.name }}</code></div>
+    <div class="tm-credentials-row"><span class="tm-label">Email:</span><code class="tm-value">{{ createdUser()!.email }}</code></div>
+    <div class="tm-credentials-row"><span class="tm-label">Password:</span><code class="tm-value">{{ createdUser()!.password }}</code></div>
+    <small class="tm-credentials-note">Save these credentials now. The password will not be shown again.</small>
+    <button type="button" class="sport-btn cancel" (click)="createdUser.set(null)">Dismiss</button>
+  </div>
+  }
+
+  <section class="user-list-panel">
+    <div>
+      <h3>Created user accounts</h3>
+      <p>View and update Tournament Manger information.</p>
+    </div>
+    @if (!users().length) {
+    <div class="empty-state">No Tournament Manager accounts created yet.</div>
+    } @else {
+    <div class="sports-table-wrap">
+      <table class="sports-table">
+        <thead><tr><th>Name</th><th>Email</th><th>Assignments</th><th class="actions-col">Actions</th></tr></thead>
+        <tbody>
+          @for (user of users(); track user.id) {
+          <tr>
+            @if (editingUserId() === user.id) {
+            <td><input class="sport-edit-input" [value]="editingUserName()" (input)="editingUserName.set($any($event.target).value)" /></td>
+            <td><input type="email" class="sport-edit-input" [value]="editingUserEmail()" (input)="editingUserEmail.set($any($event.target).value)" /><input type="password" class="sport-edit-input" placeholder="New password (optional)" [value]="editingUserPassword()" (input)="editingUserPassword.set($any($event.target).value)" /></td>
+            <td><div class="user-sport-edit"><input type="search" class="sport-search-input" placeholder="Search sports..." [value]="editingUserSportSearch()" (input)="editingUserSportSearch.set($any($event.target).value)" aria-label="Search sports to assign" />@for (sport of filteredSports(editingUserSportSearch(), user.id); track sport.id) {<label><input type="checkbox" [checked]="editingUserSportIds().includes(sport.id)" (change)="toggleEditingUserSport(sport.id, $any($event.target).checked)" />{{ sport.name }}</label>}<input type="search" class="sport-search-input" placeholder="Search socio events..." [value]="editingUserSocioSearch()" (input)="editingUserSocioSearch.set($any($event.target).value)" aria-label="Search socio events to assign" />@for (event of filteredSocioEvents(editingUserSocioSearch(), user.id); track event.id) {<label><input type="checkbox" [checked]="editingUserSocioEventIds().includes(event.id)" (change)="toggleEditingUserSocioEvent(event.id, $any($event.target).checked)" />{{ event.name }} (Socio)</label>}</div></td>
+            <td class="actions-col"><div class="sport-actions"><button type="button" class="sport-btn save" [disabled]="saving()" (click)="saveUserEdit(user)">Save</button><button type="button" class="sport-btn cancel" (click)="cancelUserEdit()">Cancel</button></div></td>
+            } @else {
+            <td class="sport-name">{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            <td><div class="user-sport-list">@for (sport of user.sportNames; track sport) {<span>{{ sport }}</span>}@for (event of user.socioEventNames; track event) {<span class="socio-assignment">{{ event }} (Socio)</span>}</div></td>
+            <td class="actions-col"><button type="button" class="sport-btn edit" (click)="startUserEdit(user)">Edit</button></td>
+            }
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    }
+  </section>
+  }
+
+  <p *ngIf="error()" class="error-state">{{ error() }}</p>
+</div>

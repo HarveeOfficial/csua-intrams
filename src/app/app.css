@@ -1,0 +1,201 @@
+.confetti {
+  position: absolute;
+  font-size: 1.6rem;
+  animation: fall linear infinite;
+  opacity: 0.85;
+}
+
+/* 🎯 Spread confetti across the screen with random timing */
+.confetti:nth-child(1) {
+  left: 5%;
+  animation-duration: 6s;
+  animation-delay: -1s;
+}
+.confetti:nth-child(2) {
+  left: 12%;
+  animation-duration: 7s;
+  animation-delay: -2s;
+}
+.confetti:nth-child(3) {
+  left: 20%;
+  animation-duration: 5.5s;
+  animation-delay: -3s;
+}
+.confetti:nth-child(4) {
+  left: 28%;
+  animation-duration: 8s;
+  animation-delay: -4s;
+}
+.confetti:nth-child(5) {
+  left: 35%;
+  animation-duration: 6.5s;
+  animation-delay: -2.5s;
+}
+.confetti:nth-child(6) {
+  left: 42%;
+  animation-duration: 7.5s;
+  animation-delay: -1.5s;
+}
+.confetti:nth-child(7) {
+  left: 50%;
+  animation-duration: 6s;
+  animation-delay: -3.2s;
+}
+.confetti:nth-child(8) {
+  left: 58%;
+  animation-duration: 8.5s;
+  animation-delay: -2.8s;
+}
+.confetti:nth-child(9) {
+  left: 65%;
+  animation-duration: 7s;
+  animation-delay: -4.5s;
+}
+.confetti:nth-child(10) {
+  left: 72%;
+  animation-duration: 5.8s;
+  animation-delay: -2.3s;
+}
+.confetti:nth-child(11) {
+  left: 80%;
+  animation-duration: 7.2s;
+  animation-delay: -3.7s;
+}
+.confetti:nth-child(12) {
+  left: 87%;
+  animation-duration: 6.7s;
+  animation-delay: -1.9s;
+}
+.confetti:nth-child(13) {
+  left: 93%;
+  animation-duration: 9s;
+  animation-delay: -5s;
+}
+.confetti:nth-child(14) {
+  left: 96%;
+  animation-duration: 6.3s;
+  animation-delay: -2.6s;
+}
+.confetti:nth-child(15) {
+  left: 15%;
+  animation-duration: 8.2s;
+  animation-delay: -4.1s;
+}
+.confetti:nth-child(16) {
+  left: 45%;
+  animation-duration: 7.8s;
+  animation-delay: -3.4s;
+}
+
+@keyframes fall {
+  0% {
+    top: -10%;
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.2);
+  }
+  100% {
+    top: 110%;
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+/* Hero Banner */
+.site-hero {
+  position: relative;
+  padding: 0.5rem 1rem 1rem;
+  background: radial-gradient(
+    circle at 25% 20%,
+    #4f46e5 0%,
+    #4078ac 55%,
+    #2563eb 100%
+  );
+  color: #fff;
+  overflow: hidden;
+}
+
+.site-hero::before,
+.site-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    60deg,
+    rgba(255, 255, 255, 0.04) 0 12px,
+    transparent 12px 24px
+  );
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+.hero-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-logo-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+}
+.hero-logo {
+  width: 950px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.35));
+  animation: logoFloat 6s ease-in-out infinite;
+}
+@keyframes logoFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.hero-title {
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
+  line-height: 1.05;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: linear-gradient(
+    90deg,
+    #ffffff 0%,
+    #ffffff 40%,
+    #ffffff 65%,
+    #ffffff 90%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  /* text-shadow: 0 2px 8px rgba(0, 0, 0, 0.35); */
+  margin: 0 0 0.75rem;
+}
+
+.hero-tagline {
+  font-size: clamp(0.95rem, 1.6vw, 1.15rem);
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.main-shell {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0rem 1rem 4rem;
+}
+
+@media (min-width: 780px) {
+  .site-hero {
+    padding: 4.5rem 1.25rem 3rem;
+  }
+  .hero-tagline {
+    font-size: 1.05rem;
+  }
+}

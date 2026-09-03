@@ -1,0 +1,187 @@
+<section class="event-info-shell">
+  <header>
+    <p class="eyebrow">CSUA Intramurals</p>
+    <h2>Sports &amp; Socio-Cultural Events</h2>
+    <p class="intro">
+      Reference guide for every event, how many athletes actually compete, and the
+      gold-medal equivalent used for scoring.
+    </p>
+  </header>
+
+  <nav class="tab-bar" role="tablist">
+    <button
+      type="button"
+      role="tab"
+      [class.active]="activeTab() === 'campus'"
+      [attr.aria-selected]="activeTab() === 'campus'"
+      (click)="selectTab('campus')"
+    >
+      Campus Sports Office
+    </button>
+    <button
+      type="button"
+      role="tab"
+      [class.active]="activeTab() === 'sports'"
+      [attr.aria-selected]="activeTab() === 'sports'"
+      (click)="selectTab('sports')"
+    >
+      Sports Events
+    </button>
+    <button
+      type="button"
+      role="tab"
+      [class.active]="activeTab() === 'socio'"
+      [attr.aria-selected]="activeTab() === 'socio'"
+      (click)="selectTab('socio')"
+    >
+      Socio Cultural Events
+    </button>
+  </nav>
+
+  @if (activeTab() === 'campus') {
+  <section class="event-group">
+    <h3>{{ campusSportsOffice.name }}</h3>
+    <p class="office-mission">{{ campusSportsOffice.mission }}</p>
+
+    <div class="office-block">
+      <h4>What We Do</h4>
+      <ul class="office-list">
+        @for (item of campusSportsOffice.responsibilities; track item) {
+          <li>{{ item }}</li>
+        }
+      </ul>
+    </div>
+
+    <div class="office-block">
+      <h4>Contact</h4>
+      <ul class="office-contact">
+        <li><strong>Office:</strong> {{ campusSportsOffice.contact.office }}</li>
+        <li><strong>Email:</strong> {{ campusSportsOffice.contact.email }}</li>
+        <li><strong>Phone:</strong> {{ campusSportsOffice.contact.phone }}</li>
+        <li><strong>Hours:</strong> {{ campusSportsOffice.contact.hours }}</li>
+      </ul>
+    </div>
+  </section>
+  }
+
+  @if (activeTab() === 'sports') {
+  <section class="event-group">
+    <h3>Sports Events</h3>
+
+    <div class="table-wrap">
+      <h4>{{ athleticsIndividual.title }}</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>Event</th>
+            <th>Actual Athletes Playing/Participating</th>
+            <th>Equivalent Gold</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of athleticsIndividual.rows; track row.event) {
+            <tr>
+              <td>{{ row.event }}</td>
+              <td>{{ row.participants }}</td>
+              <td>{{ row.equivalentGold }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="table-wrap">
+      <h4>{{ athleticsRelay.title }}</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>Event</th>
+            <th>Actual Athletes Playing</th>
+            <th>Equivalent Gold</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of athleticsRelay.rows; track row.event) {
+            <tr>
+              <td>{{ row.event }}</td>
+              <td>{{ row.participants }}</td>
+              <td>{{ row.equivalentGold }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="table-wrap">
+      <h4>{{ teamSports.title }}</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>Event</th>
+            <th>Actual Athletes Playing</th>
+            <th>Equivalent Gold</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of teamSports.rows; track row.event) {
+            <tr>
+              <td>{{ row.event }}</td>
+              <td>{{ row.participants }}</td>
+              <td>{{ row.equivalentGold }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="table-wrap">
+      <h4>{{ eSports.title }}</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>Event</th>
+            <th>Actual Players Playing</th>
+            <th>Equivalent Gold</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of eSports.rows; track row.event) {
+            <tr>
+              <td>{{ row.event }}</td>
+              <td>{{ row.participants }}</td>
+              <td>{{ row.equivalentGold }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+  }
+
+  @if (activeTab() === 'socio') {
+  <section class="event-group">
+    <h3>Socio-Cultural Events</h3>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Event</th>
+            <th>Actual Participants</th>
+            <th>Equivalent Gold</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of socioCultural.rows; track row.event) {
+            <tr>
+              <td>{{ row.event }}</td>
+              <td>{{ row.participants }}</td>
+              <td>{{ row.equivalentGold }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+  }
+</section>

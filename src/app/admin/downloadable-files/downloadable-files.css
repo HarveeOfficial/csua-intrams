@@ -1,0 +1,144 @@
+.files-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+header h2,
+header p {
+  margin: 0;
+}
+
+header h2 {
+  color: #1e293b;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+header p,
+.status {
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+header p {
+  margin-top: 0.3rem;
+}
+
+.upload-panel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1px dashed #94a3b8;
+  border-radius: 8px;
+  padding: 1rem;
+  background: #f8fafc;
+}
+
+.file-picker {
+  color: #334155;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.file-picker input {
+  display: block;
+  margin-top: 0.35rem;
+  font-weight: 400;
+}
+
+.selected-file {
+  flex: 1 1 14rem;
+  overflow-wrap: anywhere;
+  color: #475569;
+  font-size: 0.85rem;
+}
+
+.upload-button,
+.delete-button,
+.download-link {
+  border: 0;
+  border-radius: 6px;
+  padding: 0.55rem 0.8rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.upload-button {
+  background: #0284c7;
+  color: #fff;
+}
+
+.upload-button:disabled,
+.delete-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.files-table-wrap {
+  overflow-x: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+th,
+td {
+  padding: 0.7rem 0.85rem;
+  text-align: left;
+}
+
+th {
+  border-bottom: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+}
+
+tr:not(:last-child) td {
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.file-name {
+  color: #334155;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.actions {
+  white-space: nowrap;
+  text-align: right;
+}
+
+.download-link {
+  display: inline-block;
+  margin-right: 0.4rem;
+  background: #e0f2fe;
+  color: #0369a1;
+  text-decoration: none;
+}
+
+.delete-button {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.error {
+  margin: 0;
+  color: #b91c1c;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 40rem) {
+  .upload-button {
+    width: 100%;
+  }
+}

@@ -1,0 +1,47 @@
+<!-- <div class="max-w-6xl mx-auto p-6 space-y-14 page-shell"> -->
+  <!-- Scrolling college logos banner -->
+  <!-- <div class="logo-marquee" aria-label="Participating Colleges">
+    <div class="marquee-track">
+      @for (c of colleges(); track c.id) { @if (c.photo_url) {
+      <div class="logo-item" title="{{c.name}}">
+        <img
+          [src]="c.photo_url"
+          alt="{{c.name}}"
+          draggable="false"
+          loading="lazy"
+        />
+      </div>
+      } } @for (c of colleges(); track 'dup-' + c.id) { @if (c.photo_url) {
+      <div class="logo-item" title="{{c.name}}">
+        <img [src]="c.photo_url" alt="{{c.name}}" loading="lazy" />
+      </div>
+      } }
+    </div>
+  </div> -->
+
+  <section class="modern-card">
+    <h1 class="text-3xl font-bold text-center sub-gradient-title">Sports Standing</h1>
+    <!-- Points-Based Overall Ranking -->
+    <app-points-based-ranking
+      [colleges]="colleges()"
+      standingType="sports"
+    ></app-points-based-ranking>
+
+    <app-medal-standings [colleges]="colleges()" standingType="sports"></app-medal-standings>
+  </section>
+
+  <section class="modern-card">
+    <h1 class="text-3xl font-bold text-center sub-gradient-title">Socio Standing</h1>
+    <app-points-based-ranking
+      [colleges]="colleges()"
+      standingType="socio"
+    ></app-points-based-ranking>
+    <app-medal-standings [colleges]="colleges()" standingType="socio"></app-medal-standings>
+  </section>
+
+  <!-- <div class="modern-card">
+    <app-collapsible-categories
+      [colleges]="colleges()"
+    ></app-collapsible-categories>
+  </div> -->
+<!-- </div> -->
