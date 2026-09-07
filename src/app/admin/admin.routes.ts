@@ -54,4 +54,9 @@ export const routes: Routes = [
     canActivate: [adminGuard],
     loadComponent: () => import('./downloadable-files/downloadable-files').then((m) => m.DownloadableFiles),
   },
+  {
+    path: 'change-password',
+    canActivate: [authenticatedGuard],
+    loadComponent: () => import('./change-password/change-password').then((m) => m.ChangePassword),
+  },
 ];
