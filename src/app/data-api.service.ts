@@ -211,6 +211,16 @@ export class DataApi {
     return this.http.get<ISiteAnalytics>(`${this.baseUrl}/site-analytics`);
   }
 
+  recordSiteVisit(): Observable<{ totalVisits: number }> {
+    return this.http.post<{ totalVisits: number }>(`${this.baseUrl}/site-visits`, {});
+  }
+
+  recordTimeSpent(durationSeconds: number): void {
+    const payload = JSON.stringify({ duration_seconds: Math.floor(durationSeconds) });
+    const body = new Blob([payload], { type: 'application/json' });
+    navigator.sendBeacon(`${this.baseUrl}/site-time`, body);
+  }
+
   updateSiteAnalytics(payload: {
     totalVisits?: number;
     avgTimeSpentMinutes?: number;

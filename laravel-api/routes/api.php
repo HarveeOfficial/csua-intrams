@@ -25,6 +25,8 @@ Route::get('/downloadable-files', [DownloadableFileController::class, 'index']);
 Route::get('/downloadable-files/{filename}/download', [DownloadableFileController::class, 'download']);
 Route::get('/official-result', [OfficialResultController::class, 'show']);
 Route::get('/site-analytics', [SiteAnalyticsController::class, 'index']);
+Route::post('/site-visits', [SiteAnalyticsController::class, 'recordVisit']);
+Route::post('/site-time', [SiteAnalyticsController::class, 'recordTimeSpent']);
 Route::post('/site-ratings', [SiteAnalyticsController::class, 'submitRating']);
 Route::post('/site-analytics', [SiteAnalyticsController::class, 'store']);
 

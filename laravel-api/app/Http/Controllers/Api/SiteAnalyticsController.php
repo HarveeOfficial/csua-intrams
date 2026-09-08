@@ -15,10 +15,10 @@ class SiteAnalyticsController extends Controller
         $analytics = SiteAnalytics::query()->firstOrCreate([
             'id' => 1,
         ], [
-            'total_visits' => 12840,
-            'avg_time_spent_minutes' => 22,
-            'visit_trend' => [68, 82, 75, 94, 112, 124, 138],
-            'time_trend' => [12, 17, 16, 20, 24, 26, 22],
+            'total_visits' => 0,
+            'avg_time_spent_minutes' => 0,
+            'visit_trend' => [],
+            'time_trend' => [],
         ]);
 
         $avgRating = (float) SiteRating::query()->avg('rating');
@@ -27,9 +27,9 @@ class SiteAnalyticsController extends Controller
         return response()->json([
             'totalVisits' => (int) $analytics->total_visits,
             'avgTimeSpentMinutes' => (int) $analytics->avg_time_spent_minutes,
-            'visitTrend' => $analytics->visit_trend ?? [68, 82, 75, 94, 112, 124, 138],
-            'timeTrend' => $analytics->time_trend ?? [12, 17, 16, 20, 24, 26, 22],
-            'avgRating' => $avgRating ?: 4.8,
+            'visitTrend' => $analytics->visit_trend ?? [],
+            'timeTrend' => $analytics->time_trend ?? [],
+            'avgRating' => $avgRating,
             'ratingCount' => $ratingCount,
         ]);
     }
@@ -51,6 +51,31 @@ class SiteAnalyticsController extends Controller
         $analytics->save();
 
         return $this->index();
+    }
+
+    public function recordVisit(): JsonResponse
+    {
+        $analytics = SiteAnalytics::query()->firstOrCreate(['id' => 1]);
+        $analytics->increment('total_visits');
+
+        return response()->json(['totalVisits' => (int) $analytics->fresh()->total_visits]);
+    }
+
+    public function recordTimeSpent(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'duration_seconds' => ['required', 'integer', 'min:1', 'max:86400'],
+        ]);
+
+        $analytics = SiteAnalytics::query()->firstOrCreate(['id' => 1]);
+        $analytics->increment('total_time_spent_seconds', $data['duration_seconds']);
+        $analytics->refresh();
+        $analytics->avg_time_spent_minutes = $analytics->total_visits > 0
+            ? (int) round($analytics->total_time_spent_seconds / $analytics->total_visits / 60)
+            : 0;
+        $analytics->save();
+
+        return response()->json(['avgTimeSpentMinutes' => $analytics->avg_time_spent_minutes]);
     }
 
     public function submitRating(Request $request): JsonResponse

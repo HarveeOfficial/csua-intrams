@@ -1,4 +1,7 @@
+import { AsyncPipe } from '@angular/common';
 import { Component } from '@angular/core';
+import { Observable, map, shareReplay } from 'rxjs';
+import { DataApi, ScheduleEntry } from '../data-api.service';
 
 interface ProgramActivity {
   name: string;
@@ -36,47 +39,86 @@ interface FacultyGroup {
 
 @Component({
   selector: 'app-program-of-events',
+  imports: [AsyncPipe],
   templateUrl: './program-of-events.html',
   styleUrl: './program-of-events.css',
 })
 export class ProgramOfEvents {
-  sportsActivities = [
-    'Volleyball', 'Beach Volleyball', 'Basketball 5x5', 'Basketball 3x3',
-    'Baseball', 'Softball', 'Football', 'Futsal', 'Sepak', 'Lawn Tennis',
-    'Badminton', 'Table Tennis', 'Chess', 'Taekwondo', 'Arnis', 'Karate-do',
-    'Pencak Silat',
-  ];
+  schedule$: Observable<ProgramDay[]>;
+  sports$: Observable<string[]>;
+  assignments$: Observable<ProgramTableRow[]>;
 
-  athleticsActivities = [
-    'Running: 100m, 200m, 400m, 800m, 1,500m',
-    'Hurdles: 100m/110m Relay, 4x100m, 4x400m',
-    'Jumping: Long Jump, High Jump, Triple Jump',
-    'Throwing: Shot Put, Discus, Javelin',
-  ];
+  constructor(private api: DataApi) {
+    const entries$ = this.api.getSchedule().pipe(
+      shareReplay({ bufferSize: 1, refCount: true })
+    );
+    this.schedule$ = entries$.pipe(map((entries) => this.toProgramDays(entries)));
+    this.sports$ = this.api.getSports().pipe(map((sports) => sports.map((sport) => sport.name).sort()));
+    this.assignments$ = entries$.pipe(map((entries) => this.toAssignments(entries)));
+  }
 
-  eSportsActivities = ['Mobile Legends', 'Call of Duty Mobile'];
+  private toAssignments(entries: ScheduleEntry[]): ProgramTableRow[] {
+    const assignments = new Map<string, ProgramTableRow>();
+    entries.forEach((entry) => {
+      const activity = [entry.sport, entry.event].filter(Boolean).join(' - ') || entry.category || 'Scheduled event';
+      if (!assignments.has(activity)) {
+        assignments.set(activity, {
+          activity,
+          location: entry.venue || 'To be announced',
+          manager: entry.teamManagers?.join(', ') || 'To be announced',
+        });
+      }
+    });
+    return [...assignments.values()].sort((a, b) => a.activity.localeCompare(b.activity));
+  }
 
-  sportsAssignments: ProgramTableRow[] = [
-    { activity: 'Volleyball (M/W)', location: 'Volleyball Court', manager: 'Ordioso, J.' },
-    { activity: 'Beach Volleyball (M/W)', location: 'DNST', manager: 'Tugad, R.' },
-    { activity: 'Basketball 5x5 (M/W)', location: 'Basketball Court', manager: 'Guinoba, F. / Billariña, J.' },
-    { activity: 'Basketball 3x3 (M/W)', location: 'Basketball Court', manager: 'Tamanu, J. / Talamayan Jr.' },
-    { activity: 'Baseball', location: 'CHM Ground', manager: 'Mape, L.' },
-    { activity: 'Softball', location: 'Football Field', manager: 'Agoto, J.' },
-    { activity: 'Football', location: 'Football Field', manager: 'Alilam, R.' },
-    { activity: 'Futsal', location: 'Gymplex Court', manager: 'Agpalza, J.' },
-    { activity: 'Sepak (M)', location: 'Back of Admin Building', manager: 'Mabbun, J.' },
-    { activity: 'Lawn Tennis (M/W)', location: 'Aparri Park', manager: 'Mabbagu, P.' },
-    { activity: 'Badminton (M/W)', location: 'Gymplex', manager: 'Baylon, C.' },
-    { activity: 'Table Tennis (M/W)', location: 'CICS Building, room 18', manager: 'Battung, E.' },
-    { activity: 'Chess', location: 'Library', manager: 'Cariño, K.' },
-    { activity: 'Taekwondo (M/W)', location: 'Gatchalian', manager: 'Sait, C.' },
-    { activity: 'Arnis (M/W)', location: 'Gatchalian', manager: 'Silvestre, I.' },
-    { activity: 'Karate-do (M/W)', location: 'Gatchalian', manager: 'Cobales, J.' },
-    { activity: 'Pencak Silat (M/W)', location: 'Gatchalian', manager: 'Cobales, J.' },
-    { activity: 'Mobile Legends (M/W)', location: 'CICS (online)', manager: 'Soriano, F.' },
-    { activity: 'Call of Duty Mobile (M/W)', location: 'CICS (online)', manager: 'Cabus, S.' },
-  ];
+  private toProgramDays(entries: ScheduleEntry[]): ProgramDay[] {
+    const days = new Map<string, ProgramDay>();
+
+    [...entries]
+      .sort((a, b) => (a.scheduledAt || '').localeCompare(b.scheduledAt || ''))
+      .forEach((entry) => {
+        const date = entry.scheduledAt ? new Date(entry.scheduledAt) : null;
+        const key = date && !Number.isNaN(date.getTime())
+          ? date.toISOString().slice(0, 10)
+          : 'unscheduled';
+        const day = days.get(key) || {
+          label: key === 'unscheduled' ? 'Unscheduled' : `Day ${days.size + 1}`,
+          date: date ? this.formatDate(date) : 'Date to be announced',
+          sessions: [],
+        };
+        const period = date && date.getHours() < 12 ? 'Morning' : 'Afternoon';
+        let session = day.sessions.find((item) => item.period === period);
+        if (!session) {
+          session = { period, activities: [] };
+          day.sessions.push(session);
+        }
+        session.activities.push({
+          name: [entry.sport, entry.event].filter(Boolean).join(' - ') || entry.category || 'Scheduled event',
+          venue: entry.venue || '',
+          time: date ? this.formatTime(date) : 'TBA',
+        });
+        days.set(key, day);
+      });
+
+    return [...days.values()];
+  }
+
+  private formatDate(date: Date): string {
+    return new Intl.DateTimeFormat('en-US', {
+      month: 'short',
+      day: 'numeric',
+      weekday: 'long',
+      year: 'numeric',
+    }).format(date);
+  }
+
+  private formatTime(date: Date): string {
+    return new Intl.DateTimeFormat('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+    }).format(date);
+  }
 
   facultyGroups: FacultyGroup[] = [
     { title: 'Mass', members: ['Ms. Diosa Marie Domingo', 'Dr. Maxima T. Sanchez', 'Ms. Jenean Luga', 'Mr. Evan Fred Battung', 'Mr. Reister Blancaflor'] },

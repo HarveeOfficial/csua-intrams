@@ -29,18 +29,18 @@ export class Analytics {
       next: (analytics) => {
         this.totalVisits.set(analytics.totalVisits || 0);
         this.avgTimeSpentMinutes.set(analytics.avgTimeSpentMinutes || 0);
-        this.visitTrend = analytics.visitTrend?.length ? analytics.visitTrend : [68, 82, 75, 94, 112, 124, 138];
-        this.timeTrend = analytics.timeTrend?.length ? analytics.timeTrend : [12, 17, 16, 20, 24, 26, 22];
+        this.visitTrend = analytics.visitTrend || [];
+        this.timeTrend = analytics.timeTrend || [];
         this.averageRating.set(analytics.avgRating ?? 0);
         this.ratingCount.set(analytics.ratingCount ?? 0);
         this.popupRating.set(0);
       },
       error: () => {
-        this.totalVisits.set(12840);
-        this.avgTimeSpentMinutes.set(22);
-        this.visitTrend = [68, 82, 75, 94, 112, 124, 138];
-        this.timeTrend = [12, 17, 16, 20, 24, 26, 22];
-        this.averageRating.set(4.8);
+        this.totalVisits.set(0);
+        this.avgTimeSpentMinutes.set(0);
+        this.visitTrend = [];
+        this.timeTrend = [];
+        this.averageRating.set(0);
         this.ratingCount.set(0);
         this.popupRating.set(0);
       },

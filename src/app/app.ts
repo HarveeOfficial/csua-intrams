@@ -1,6 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { AuthApi, UserSession } from './auth-api.service';
+import { DataApi } from './data-api.service';
 
 @Component({
   selector: 'app-root',
@@ -10,6 +11,7 @@ import { AuthApi, UserSession } from './auth-api.service';
 })
 export class App implements OnInit {
   auth = inject(AuthApi);
+  dataApi = inject(DataApi);
   router = inject(Router);
   protected title = 'csua-intrams';
 
@@ -19,9 +21,19 @@ export class App implements OnInit {
   rating = signal(this.readStoredRating());
   isRatingModalOpen = signal(false);
   starValues = Array.from({ length: 5 }, (_, index) => index + 1);
+  private readonly sessionStartedAt = Date.now();
+  private readonly recordSessionTime = (): void => {
+    if (!this.router.url.startsWith('/admin')) {
+      this.dataApi.recordTimeSpent((Date.now() - this.sessionStartedAt) / 1000);
+    }
+  };
 
   ngOnInit(): void {
     this.currentUser = this.auth.currentUser;
+    if (!this.router.url.startsWith('/admin')) {
+      this.dataApi.recordSiteVisit().subscribe();
+      window.addEventListener('pagehide', this.recordSessionTime, { once: true });
+    }
   }
 
   isAdminRoute() {
@@ -44,15 +56,20 @@ export class App implements OnInit {
 
   selectRating(value: number): void {
     this.rating.set(value);
-    localStorage.setItem(this.publicRatingKey, String(value));
   }
 
   submitRating(): void {
-    if (this.rating() <= 0) {
+    const selectedRating = this.rating();
+    if (selectedRating <= 0) {
       return;
     }
 
-    this.closeRatingModal();
+    this.dataApi.submitSiteRating(selectedRating).subscribe({
+      next: () => {
+        localStorage.setItem(this.publicRatingKey, String(selectedRating));
+        this.closeRatingModal();
+      },
+    });
   }
 
   isStarFilled(star: number): boolean {

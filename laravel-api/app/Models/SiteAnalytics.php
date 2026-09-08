@@ -11,6 +11,7 @@ class SiteAnalytics extends Model
     protected $fillable = [
         'total_visits',
         'avg_time_spent_minutes',
+        'total_time_spent_seconds',
         'visit_trend',
         'time_trend',
     ];
@@ -18,5 +19,6 @@ class SiteAnalytics extends Model
     protected $casts = [
         'visit_trend' => 'array',
         'time_trend' => 'array',
+        'total_time_spent_seconds' => 'integer',
     ];
 }
