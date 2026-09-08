@@ -43,6 +43,16 @@ export class AuthApi {
     }
   }
 
+  async changePassword(currentPassword: string, password: string, passwordConfirmation: string): Promise<void> {
+    await firstValueFrom(
+      this.http.patch(`${this.baseUrl}/auth/password`, {
+        current_password: currentPassword,
+        password,
+        password_confirmation: passwordConfirmation,
+      })
+    );
+  }
+
   isLoggedIn(): boolean {
     return this.currentUser() !== null;
   }

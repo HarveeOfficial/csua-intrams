@@ -87,13 +87,94 @@
         </a>
       </div>
     </div>
-    <button
-      (click)="logout()"
-      class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg shadow w-full sm:w-auto"
-    >
-      Logout
-    </button>
+    <div class="flex items-center gap-2 w-full sm:w-auto">
+      <button
+        *ngIf="isTeamManager()"
+        (click)="openChangePassword()"
+        class="bg-slate-600 hover:bg-slate-700 text-white px-4 py-2 rounded-lg shadow w-full sm:w-auto"
+      >
+        Change Password
+      </button>
+      <button
+        (click)="logout()"
+        class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg shadow w-full sm:w-auto"
+      >
+        Logout
+      </button>
+    </div>
   </div>
+
+  <!-- Change Password Modal -->
+  @if (showChangePassword()) {
+  <div
+    class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+    (click)="closeChangePassword()"
+  >
+    <div
+      class="bg-white rounded-xl shadow-lg w-full max-w-sm p-5"
+      (click)="$event.stopPropagation()"
+    >
+      <h2 class="text-lg font-semibold mb-4">Change Password</h2>
+      <form (ngSubmit)="submitChangePassword()">
+        <label class="block text-sm font-medium mb-1"
+          >Current Password
+          <input
+            type="password"
+            required
+            class="mt-1 w-full border rounded-lg px-3 py-2"
+            [value]="currentPassword()"
+            (input)="currentPassword.set($any($event.target).value)"
+          />
+        </label>
+        <label class="block text-sm font-medium mb-1 mt-3"
+          >New Password
+          <input
+            type="password"
+            required
+            minlength="8"
+            placeholder="At least 8 characters"
+            class="mt-1 w-full border rounded-lg px-3 py-2"
+            [value]="newPassword()"
+            (input)="newPassword.set($any($event.target).value)"
+          />
+        </label>
+        <label class="block text-sm font-medium mb-1 mt-3"
+          >Confirm New Password
+          <input
+            type="password"
+            required
+            class="mt-1 w-full border rounded-lg px-3 py-2"
+            [value]="confirmPassword()"
+            (input)="confirmPassword.set($any($event.target).value)"
+          />
+        </label>
+
+        @if (passwordError()) {
+        <p class="text-sm text-red-600 mt-3">{{ passwordError() }}</p>
+        } @if (passwordSuccess()) {
+        <p class="text-sm text-emerald-600 mt-3">{{ passwordSuccess() }}</p>
+        }
+
+        <div class="flex justify-end gap-2 mt-5">
+          <button
+            type="button"
+            (click)="closeChangePassword()"
+            class="px-4 py-2 rounded-lg border hover:bg-slate-50"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            [disabled]="changingPassword()"
+            class="px-4 py-2 rounded-lg bg-slate-700 text-white hover:bg-slate-800 disabled:opacity-60"
+          >
+            {{ changingPassword() ? 'Saving...' : 'Save' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  }
 
   <!-- Main Content -->
   <div class="bg-white shadow rounded-xl p-4 md:p-6">
