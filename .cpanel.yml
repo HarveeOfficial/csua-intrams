@@ -1,0 +1,15 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/csuaparr/public_html/repositories/intrams.csuaparri.net/laravel-api/
+    - /bin/cp -R laravel-api/app $DEPLOYPATH
+    - /bin/cp -R laravel-api/bootstrap $DEPLOYPATH
+    - /bin/cp -R laravel-api/config $DEPLOYPATH
+    - /bin/cp -R laravel-api/database $DEPLOYPATH
+    - /bin/cp -R laravel-api/public $DEPLOYPATH
+    - /bin/cp -R laravel-api/resources $DEPLOYPATH
+    - /bin/cp -R laravel-api/routes $DEPLOYPATH
+    - /bin/cp laravel-api/artisan $DEPLOYPATH
+    - /bin/cp laravel-api/composer.json $DEPLOYPATH
+    - /bin/cp laravel-api/composer.lock $DEPLOYPATH
+    - cd $DEPLOYPATH && composer install --no-dev --optimize-autoloader
