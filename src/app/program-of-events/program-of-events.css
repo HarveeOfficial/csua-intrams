@@ -6,20 +6,6 @@
   background: #fff;
 }
 
-.program-cover {
-  margin: -1.5rem -1.5rem 1.5rem;
-  background: #1e293b;
-  overflow: hidden;
-}
-
-.program-cover img {
-  display: block;
-  width: 100%;
-  max-height: 28rem;
-  object-fit: cover;
-  object-position: center;
-}
-
 .eyebrow {
   margin: 0;
   color: #b45309;
@@ -52,130 +38,6 @@ h2 {
   color: #0f172a;
   font-size: 1.25rem;
   font-weight: 800;
-}
-
-.reference-section {
-  margin-top: 2.5rem;
-  padding-top: 2rem;
-  border-top: 1px solid #e2e8f0;
-}
-
-.section-heading h3 {
-  margin: 0.25rem 0 1.25rem;
-  color: #0f172a;
-  font-size: 1.3rem;
-  font-weight: 800;
-}
-
-.overview-grid,
-.statement-grid,
-.values-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem;
-}
-
-.overview-panel,
-.statement-grid article,
-.value-panel {
-  padding: 1rem;
-  border: 1px solid #e2e8f0;
-  background: #f8fafc;
-}
-
-.overview-panel h4,
-.statement-grid h4,
-.value-panel h4,
-.faculty-group h4 {
-  margin: 0 0 0.65rem;
-  color: #92400e;
-  font-size: 0.9rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.compact-list,
-.faculty-group ul,
-.value-panel ul {
-  margin: 0;
-  padding-left: 1.1rem;
-  color: #334155;
-  line-height: 1.6;
-}
-
-.secondary-heading {
-  margin-top: 1.25rem !important;
-}
-
-.table-scroll {
-  overflow-x: auto;
-}
-
-.program-table {
-  min-width: 42rem;
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.86rem;
-}
-
-.program-table th,
-.program-table td {
-  padding: 0.65rem 0.75rem;
-  border: 1px solid #e2e8f0;
-  text-align: left;
-}
-
-.program-table th {
-  background: #fef3c7;
-  color: #78350f;
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.program-table td {
-  color: #334155;
-}
-
-.program-table tbody tr:nth-child(even) {
-  background: #f8fafc;
-}
-
-.faculty-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem;
-}
-
-.faculty-group {
-  padding: 1rem;
-  border: 1px solid #e2e8f0;
-  background: #fffdf5;
-}
-
-.faculty-group ul {
-  list-style: none;
-  padding-left: 0;
-  line-height: 1.5;
-}
-
-.university-section {
-  margin-bottom: 1rem;
-}
-
-.statement-grid {
-  margin-bottom: 1rem;
-}
-
-.statement-grid p {
-  margin: 0;
-  color: #475569;
-  line-height: 1.65;
-}
-
-.values-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .program-day {
@@ -228,78 +90,13 @@ h2 {
   white-space: nowrap;
 }
 
-.program-sub-sessions {
-  margin: 0.75rem 0 0;
-  padding: 0.75rem 1rem 0.25rem;
-  border-left: 3px solid #fbbf24;
-  background: #fffbeb;
-}
-
-.sub-sessions-title {
-  margin: 0 0 0.45rem;
-  color: #92400e;
-  font-size: 0.7rem;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.program-sub-sessions ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.program-sub-sessions li {
-  display: grid;
-  grid-template-columns: minmax(12rem, 0.8fr) minmax(0, 1.2fr);
-  gap: 0.75rem;
-  padding: 0.45rem 0;
-  border-top: 1px solid #fef3c7;
-  color: #57534e;
-  font-size: 0.84rem;
-}
-
-.sub-session-name {
-  font-weight: 700;
-  color: #44403c;
-}
-
-.sub-session-desc {
-  color: #78716c;
-}
-
 @media (max-width: 34rem) {
   .program-shell {
     margin: 1rem auto;
     padding: 1rem;
   }
 
-  .program-cover {
-    margin: -1rem -1rem 1rem;
-  }
-
-  .program-cover img {
-    max-height: 18rem;
-  }
-
   .activity-meta {
     white-space: normal;
-  }
-
-  .program-sub-sessions li {
-    display: block;
-  }
-
-  .sub-session-desc {
-    display: block;
-    margin-top: 0.15rem;
-  }
-
-  .overview-grid,
-  .statement-grid,
-  .values-grid,
-  .faculty-grid {
-    grid-template-columns: 1fr;
   }
 }

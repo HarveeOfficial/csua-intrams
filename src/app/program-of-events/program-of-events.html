@@ -1,13 +1,4 @@
 <section class="program-shell">
-  <figure class="program-cover">
-    <img
-      src="intrams_2026.jpg"
-      alt="CSU-Aparri Intramurals 2026 program cover"
-      loading="eager"
-      draggable="false"
-    />
-  </figure>
-
   <header>
     <p class="eyebrow">CSUA Intramurals</p>
     <h2>Program of Events</h2>
@@ -17,8 +8,7 @@
   <section class="program-content">
     <h3>CSU-Aparri Intramurals 2026</h3>
 
-    @if (schedule$ | async; as programOfEvents) {
-      @for (day of programOfEvents; track day.date + day.label) {
+    @for (day of programOfEvents; track day.label) {
       <div class="program-day">
         <h4>{{ day.label }} - {{ day.date }}</h4>
         @for (session of day.sessions; track session.period) {
@@ -32,100 +22,9 @@
                 </li>
               }
             </ul>
-            @if (session.subSessions?.length) {
-              <div class="program-sub-sessions">
-                <ul>
-                  @for (subSession of session.subSessions; track subSession.subname) {
-                    <li>
-                      <span class="sub-session-name">{{ subSession.subname }}</span>
-                      <span class="sub-session-desc">{{ subSession.desc }}</span>
-                    </li>
-                  }
-                </ul>
-              </div>
-            }
           </div>
         }
       </div>
-      }
-      @if (!programOfEvents.length) {
-        <p class="program-empty">No games have been scheduled yet.</p>
-      }
-    } @else {
-      <p class="program-empty">Loading scheduled events...</p>
     }
-  </section>
-
-  <section class="reference-section">
-    <div class="section-heading">
-      <p class="eyebrow">Competition overview</p>
-      <h3>Sports, Athletics &amp; E-Sports</h3>
-    </div>
-    @if (sports$ | async; as sports) {
-      <div class="overview-grid">
-        <article class="overview-panel">
-          <h4>Sports Events</h4>
-          <ul class="compact-list">
-            @for (sport of sports; track sport) { <li>{{ sport }}</li> }
-          </ul>
-          @if (!sports.length) { <p>No sports have been configured yet.</p> }
-        </article>
-      </div>
-    } @else {
-      <p>Loading sports...</p>
-    }
-  </section>
-
-  <section class="reference-section">
-    <div class="section-heading">
-      <p class="eyebrow">Operations</p>
-      <h3>Sports Activities, Locations &amp; Tournament Managers</h3>
-    </div>
-    <div class="table-scroll">
-      <table class="program-table">
-        <thead><tr><th>Sports Activities</th><th>Location</th><th>Tournament Manager</th></tr></thead>
-        <tbody>
-          @for (row of (assignments$ | async) ?? []; track row.activity) {
-            <tr><td>{{ row.activity }}</td><td>{{ row.location }}</td><td>{{ row.manager }}</td></tr>
-          }
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <section class="reference-section faculty-section">
-    <div class="section-heading">
-      <p class="eyebrow">Campus support</p>
-      <h3>Faculty/Personnel In-Charge</h3>
-    </div>
-    <div class="faculty-grid">
-      @for (group of facultyGroups; track group.title) {
-        <article class="faculty-group">
-          <h4>{{ group.title }}</h4>
-          <ul>
-            @for (member of group.members; track member) { <li>{{ member }}</li> }
-          </ul>
-        </article>
-      }
-    </div>
-  </section>
-
-  <section class="reference-section university-section">
-    <div class="section-heading">
-      <p class="eyebrow">Cagayan State University</p>
-      <h3>Vision, Mission &amp; Core Values</h3>
-    </div>
-    <div class="statement-grid">
-      <article><h4>Vision</h4><p>{{ universityInfo.vision }}</p></article>
-      <article><h4>Mission</h4><p>{{ universityInfo.mission }}</p></article>
-    </div>
-    <div class="values-grid">
-      @for (value of universityInfo.values; track value.title) {
-        <article class="value-panel">
-          <h4>{{ value.title }}</h4>
-          <ul>@for (item of value.items; track item) { <li>{{ item }}</li> }</ul>
-        </article>
-      }
-    </div>
   </section>
 </section>
