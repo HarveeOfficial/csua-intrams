@@ -1,0 +1,1 @@
+var t=location.hostname,i=location.port==="4200"||t==="localhost"||t==="127.0.0.1"||t.endsWith(".test"),o=i?"/api":"https://api.intrams.csuaparri.net/api";function a(s){return s.startsWith("/api")||s.startsWith("https://api.intrams.csuaparri.net/api")}var n=i?"6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI":"6LeYLKYtAAAAACK1Xy06dDhlpxECEnpX1vgSjx36";export{o as a,a as b,n as c};
