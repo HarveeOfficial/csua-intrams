@@ -3,8 +3,15 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'standings',
+    redirectTo: 'program-of-events',
     pathMatch: 'full',
+  },
+  {
+    path: 'program-of-events',
+    loadComponent: () =>
+      import('./program-of-events/program-of-events').then(
+        (m) => m.ProgramOfEvents
+      ),
   },
   {
     path: 'standings',

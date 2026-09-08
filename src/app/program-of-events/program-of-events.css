@@ -1,0 +1,102 @@
+.program-shell {
+  max-width: 60rem;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  border-top: 4px solid #f59e0b;
+  background: #fff;
+}
+
+.eyebrow {
+  margin: 0;
+  color: #b45309;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+h2 {
+  margin: 0.3rem 0 0;
+  color: #1e293b;
+  font-size: 1.8rem;
+  font-weight: 800;
+}
+
+.intro {
+  margin: 0.45rem 0 0;
+  color: #64748b;
+}
+
+.program-content {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.program-content h3 {
+  margin: 0 0 1rem;
+  color: #0f172a;
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.program-day {
+  margin-bottom: 1.75rem;
+}
+
+.program-day h4 {
+  margin: 0 0 0.75rem;
+  color: #0f172a;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.program-session {
+  margin-bottom: 1rem;
+}
+
+.program-period {
+  margin: 0 0 0.4rem;
+  color: #b45309;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.program-activities {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.program-activities li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+}
+
+.activity-name {
+  font-weight: 600;
+}
+
+.activity-meta {
+  color: #64748b;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+@media (max-width: 34rem) {
+  .program-shell {
+    margin: 1rem auto;
+    padding: 1rem;
+  }
+
+  .activity-meta {
+    white-space: normal;
+  }
+}
