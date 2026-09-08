@@ -45,6 +45,15 @@
     >
       Socio Cultural Events
     </button>
+    <button
+      type="button"
+      role="tab"
+      [class.active]="activeTab() === 'program'"
+      [attr.aria-selected]="activeTab() === 'program'"
+      (click)="selectTab('program')"
+    >
+      Program of Events
+    </button>
   </nav>
 
   @if (activeTab() === 'campus') {
@@ -202,6 +211,31 @@
     <h3>A Message from Our {{ ceoMessage.title }}</h3>
     <p class="ceo-body">{{ ceoMessage.message }}</p>
     <p class="ceo-signature">— {{ ceoMessage.name }}, {{ ceoMessage.title }}</p>
+  </section>
+  }
+
+  @if (activeTab() === 'program') {
+  <section class="event-group">
+    <h3>CSU-Aparri Intramurals 2026 — Program of Events</h3>
+
+    @for (day of programOfEvents; track day.label) {
+      <div class="program-day">
+        <h4>{{ day.label }} — {{ day.date }}</h4>
+        @for (session of day.sessions; track session.period) {
+          <div class="program-session">
+            <p class="program-period">{{ session.period }}</p>
+            <ul class="program-activities">
+              @for (activity of session.activities; track activity.name) {
+                <li>
+                  <span class="activity-name">{{ activity.name }}</span>
+                  <span class="activity-meta">{{ activity.venue ? activity.venue + ' @ ' : '' }}{{ activity.time }}</span>
+                </li>
+              }
+            </ul>
+          </div>
+        }
+      </div>
+    }
   </section>
   }
 </section>

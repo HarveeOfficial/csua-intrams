@@ -143,32 +143,121 @@ class ScheduleController extends Controller
             return response()->json(['message' => 'Schedule entry not found'], 404);
         }
 
-        $winnerInput = $entry->type === 'multi'
-            ? null
-            : trim((string) $request->input('winner', ''));
-        $winnerCollege = null;
-        if ($entry->type === 'multi') {
-            $placements = collect($request->input('winner', []))
-                ->map(fn (mixed $team): string => mb_strtoupper(trim((string) $team)))
-                ->filter()
-                ->all();
-            $validTeams = $entry->teams->map(fn (ScheduleEntryTeam $team): string => mb_strtoupper($team->college?->code ?? ''))->all();
-            if (count($placements) !== count(array_unique($placements)) || collect($placements)->diff($validTeams)->isNotEmpty()) {
-                throw ValidationException::withMessages([
-                    'winner' => ['Each placement must be a different team from this event.'],
-                ]);
-            }
-            $entry->multi_winners = array_merge(['first' => null, 'second' => null, 'third' => null], $request->input('winner', []));
-        } elseif ($winnerInput !== '') {
-            $winnerCollege = $this->resolveCollegeByCode($winnerInput);
-            if (! $winnerCollege) {
-                throw ValidationException::withMessages([
-                    'winner' => ['Winner team does not match an existing college.'],
-                ]);
+        if ($request->has('sport') && $entry->standing_type !== 'socio') {
+            $sportName = trim((string) $request->input('sport'));
+            if ($sportName !== '') {
+                $sport = Sport::query()->firstOrCreate(
+                    ['slug' => Str::slug($sportName)],
+                    ['name' => $sportName]
+                );
+                $entry->sport_id = $sport->id;
             }
         }
 
-        $entry->winner_college_id = $winnerCollege?->id;
+        if ($request->has('category')) {
+            $categoryName = trim((string) $request->input('category')) ?: '-';
+            $category = EventCategory::query()->firstOrCreate(
+                ['slug' => Str::slug($categoryName)],
+                ['name' => $categoryName]
+            );
+            $entry->event_category_id = $category->id;
+        }
+
+        if ($request->has('event')) {
+            $entry->event_name = trim((string) $request->input('event')) ?: null;
+        }
+
+        if ($request->has('game')) {
+            $entry->game = (int) $request->input('game');
+        }
+
+        $typeChanged = false;
+        if ($request->has('type')) {
+            $newType = (string) $request->input('type');
+            $typeChanged = $newType !== $entry->type;
+            $entry->type = $newType;
+        }
+
+        $teamsReplaced = false;
+        if ($request->has('teams')) {
+            $teams = collect($request->input('teams', []))
+                ->map(fn (mixed $team) => mb_strtoupper(trim((string) $team)))
+                ->filter()
+                ->unique()
+                ->values();
+
+            if ($entry->type === 'h2h' && $teams->count() !== 2) {
+                throw ValidationException::withMessages([
+                    'teams' => ['Head-to-head schedules require exactly 2 unique teams.'],
+                ]);
+            }
+            if ($teams->count() < 2) {
+                throw ValidationException::withMessages([
+                    'teams' => ['At least 2 unique teams are required.'],
+                ]);
+            }
+
+            $resolvedColleges = $teams->map(function (string $code): College {
+                $college = $this->resolveCollegeByCode($code);
+                if (! $college) {
+                    throw ValidationException::withMessages([
+                        'teams' => ["Unknown team code: {$code}"],
+                    ]);
+                }
+
+                return $college;
+            });
+
+            DB::transaction(function () use ($entry, $resolvedColleges): void {
+                ScheduleEntryTeam::query()->where('schedule_entry_id', $entry->id)->delete();
+                foreach ($resolvedColleges as $index => $college) {
+                    ScheduleEntryTeam::query()->create([
+                        'schedule_entry_id' => $entry->id,
+                        'college_id' => $college->id,
+                        'slot' => $index + 1,
+                    ]);
+                }
+            });
+
+            $teamsReplaced = true;
+            $entry->load('teams.college');
+        }
+
+        if ($teamsReplaced || $typeChanged) {
+            $entry->winner_college_id = null;
+            $entry->multi_winners = null;
+        }
+
+        if ($request->has('winner')) {
+            if ($entry->type === 'multi') {
+                $placements = collect($request->input('winner', []))
+                    ->map(fn (mixed $team): string => mb_strtoupper(trim((string) $team)))
+                    ->filter()
+                    ->all();
+                $validTeams = $entry->teams->map(fn (ScheduleEntryTeam $team): string => mb_strtoupper($team->college?->code ?? ''))->all();
+                if (count($placements) !== count(array_unique($placements)) || collect($placements)->diff($validTeams)->isNotEmpty()) {
+                    throw ValidationException::withMessages([
+                        'winner' => ['Each placement must be a different team from this event.'],
+                    ]);
+                }
+                $entry->multi_winners = array_merge(['first' => null, 'second' => null, 'third' => null], $request->input('winner', []));
+                $entry->winner_college_id = null;
+            } else {
+                $winnerInput = trim((string) $request->input('winner', ''));
+                $entry->winner_college_id = null;
+                $entry->multi_winners = null;
+                if ($winnerInput !== '') {
+                    $winnerCollege = $this->resolveCollegeByCode($winnerInput);
+                    if (! $winnerCollege) {
+                        throw ValidationException::withMessages([
+                            'winner' => ['Winner team does not match an existing college.'],
+                        ]);
+                    }
+                    $entry->winner_college_id = $winnerCollege->id;
+                }
+            }
+        }
+
         if ($request->has('scheduledAt')) {
             $entry->scheduled_at = $request->filled('scheduledAt') ? $request->date('scheduledAt') : null;
         }

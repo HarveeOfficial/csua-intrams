@@ -28,6 +28,18 @@ export class EventSchedAndStats {
   sportOptions = signal<string[]>([]);
   sportFilter = signal<string>('');
   socioEvents = signal<{ id: number; name: string }[]>([]);
+  editingId = signal<string | null>(null);
+
+  editForm = new FormGroup({
+    sport: new FormControl('', { nonNullable: true }),
+    category: new FormControl('', { nonNullable: true }),
+    event: new FormControl('', { nonNullable: true }),
+    game: new FormControl<number | null>(null, {
+      validators: [Validators.required, Validators.min(1)],
+    }),
+    type: new FormControl<'h2h' | 'multi'>('h2h', { nonNullable: true }),
+    teams: new FormArray<FormControl<string>>([]),
+  });
 
   form = new FormGroup({
     standingType: new FormControl<'sports' | 'socio'>('sports', { nonNullable: true }),
@@ -364,11 +376,11 @@ export class EventSchedAndStats {
       .join('');
   }
 
-  isCollegeSelectable(name: string, index: number): boolean {
+  isCollegeSelectable(name: string, index: number, teamsArray: FormArray<FormControl<string>> = this.teamsArray): boolean {
     if (!name) return false;
     const target = this.acronym(name).trim();
-    const currentValue = this.teamsArray.at(index)?.value?.trim(); // already an acronym
-    const chosen = this.teamsArray.controls
+    const currentValue = teamsArray.at(index)?.value?.trim(); // already an acronym
+    const chosen = teamsArray.controls
       .map((c, i) => (i === index ? null : c.value?.trim()))
       .filter((v): v is string => !!v);
     // Allow if acronym not chosen elsewhere OR it's the current control's value
@@ -377,5 +389,104 @@ export class EventSchedAndStats {
 
   colorFor(acronym: string): string {
     return this.colorByAcronym[acronym] || '#475569'; // fallback slate
+  }
+
+  get editTeamsArray() {
+    return this.editForm.get('teams') as FormArray<FormControl<string>>;
+  }
+
+  startEdit(row: any) {
+    if (!row?.id) return;
+    this.editingId.set(row.id);
+    const teamsArr = this.editTeamsArray;
+    while (teamsArr.length) teamsArr.removeAt(0);
+    if (row.type === 'multi') {
+      teamsArr.push(new FormControl('', { nonNullable: true }));
+    } else {
+      (row.teams || []).forEach((t: string) =>
+        teamsArr.push(new FormControl(t, { nonNullable: true, validators: [Validators.required] }))
+      );
+      while (teamsArr.length < 2)
+        teamsArr.push(new FormControl('', { nonNullable: true, validators: [Validators.required] }));
+    }
+    // patchValue (not reset) so it doesn't clobber the teams FormArray just populated above
+    this.editForm.patchValue({
+      sport: row.sport || '',
+      category: row.category === '-' ? '' : row.category || '',
+      event: row.event || '',
+      game: row.game,
+      type: row.type,
+    });
+  }
+
+  cancelEdit() {
+    this.editingId.set(null);
+  }
+
+  onEditTypeChange() {
+    const type = this.editForm.get('type')!.value;
+    if (type === 'h2h') {
+      while (this.editTeamsArray.length > 2) this.editTeamsArray.removeAt(this.editTeamsArray.length - 1);
+      while (this.editTeamsArray.length < 2)
+        this.editTeamsArray.push(
+          new FormControl('', { nonNullable: true, validators: [Validators.required] })
+        );
+    } else if (this.editTeamsArray.length < 3) {
+      this.editTeamsArray.push(new FormControl('', { nonNullable: true }));
+    }
+  }
+
+  addEditTeamField() {
+    this.editTeamsArray.push(new FormControl('', { nonNullable: true }));
+  }
+
+  removeEditTeamField(i: number) {
+    if (this.editTeamsArray.length > 2) this.editTeamsArray.removeAt(i);
+  }
+
+  canSaveEdit(row: any): boolean {
+    if (!this.editForm.get('game')?.valid) return false;
+    if (row.standingType !== 'socio' && !this.editForm.get('sport')?.value?.trim()) return false;
+    const type = this.editForm.get('type')!.value;
+    if (type === 'multi') return true;
+    const teams = this.editTeamsArray.controls
+      .map((c) => c.value.trim())
+      .filter((v, idx, arr) => !!v && arr.indexOf(v) === idx);
+    return teams.length === 2;
+  }
+
+  async saveEdit(row: any) {
+    if (!row?.id || !this.canSaveEdit(row)) return;
+    const raw = this.editForm.getRawValue();
+    let teams: string[];
+    if (raw.type === 'multi') {
+      const colleges = await firstValueFrom(this.colleges$);
+      teams = colleges
+        .map((c: any) => this.acronym((c.name || '').trim()))
+        .filter((v: string) => !!v);
+      teams = [...new Set(teams)];
+    } else {
+      teams = this.editTeamsArray.controls
+        .map((c) => c.value.trim())
+        .filter((v, idx, arr) => !!v && arr.indexOf(v) === idx);
+    }
+    const payload: any = {
+      category: raw.category?.trim() || '-',
+      event: raw.event?.trim() || null,
+      game: raw.game,
+      type: raw.type,
+      teams,
+    };
+    if (row.standingType !== 'socio') {
+      payload.sport = raw.sport.trim();
+    }
+    try {
+      await firstValueFrom(this.api.updateScheduleDetails(row.id, payload));
+    } catch (err) {
+      this.reportError('update', err);
+      return;
+    }
+    this.editingId.set(null);
+    this.refreshSchedule();
   }
 }

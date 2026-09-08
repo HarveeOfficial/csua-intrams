@@ -20,6 +20,13 @@ class UpdateScheduleWinnerRequest extends FormRequest
             'winner.third' => ['nullable', 'string', 'max:100'],
             'scheduledAt' => ['nullable', 'date'],
             'venue' => ['nullable', 'string', 'max:255'],
+            'sport' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'category' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'event' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'game' => ['sometimes', 'integer', 'min:1'],
+            'type' => ['sometimes', 'in:h2h,multi'],
+            'teams' => ['sometimes', 'array', 'min:2'],
+            'teams.*' => ['required', 'string', 'max:100'],
         ];
     }
 }

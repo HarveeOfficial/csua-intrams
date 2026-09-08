@@ -142,10 +142,52 @@
               class="border-b last:border-b-0 hover:bg-indigo-50/50 transition"
             >
               <td class="py-2 pr-4 text-slate-500 align-top">{{ i + 1 }}</td>
-              <td class="py-2 pr-4 font-medium align-top whitespace-nowrap">{{ row.sport || row.event }}</td>
-              <td class="py-2 pr-4 align-top hidden sm:table-cell whitespace-nowrap">{{ row.category || '-' }}</td>
-              <td class="py-2 pr-4 align-top hidden md:table-cell whitespace-nowrap">{{ row.event || '—' }}</td>
-              <td class="py-2 pr-4 align-top whitespace-nowrap">{{ row.game }}</td>
+              <td class="py-2 pr-4 font-medium align-top whitespace-nowrap">
+                <ng-container *ngIf="editingId() === row.id; else standingView">
+                  <input
+                    *ngIf="row.standingType !== 'socio'; else standingLocked"
+                    type="text"
+                    [formControl]="editForm.controls.sport"
+                    placeholder="Sport"
+                    class="px-2 py-1 rounded border text-[10px] md:text-[11px] w-24"
+                  />
+                  <ng-template #standingLocked>{{ row.sport || row.event }}</ng-template>
+                </ng-container>
+                <ng-template #standingView>{{ row.sport || row.event }}</ng-template>
+              </td>
+              <td class="py-2 pr-4 align-top hidden sm:table-cell whitespace-nowrap">
+                <ng-container *ngIf="editingId() === row.id; else categoryView">
+                  <select [formControl]="editForm.controls.category" class="px-2 py-1 rounded border text-[10px] md:text-[11px] bg-white">
+                    <option value="">(None)</option>
+                    <option value="Men">Men</option>
+                    <option value="Women">Women</option>
+                    <option value="Mix">Mix</option>
+                  </select>
+                </ng-container>
+                <ng-template #categoryView>{{ row.category || '-' }}</ng-template>
+              </td>
+              <td class="py-2 pr-4 align-top hidden md:table-cell whitespace-nowrap">
+                <ng-container *ngIf="editingId() === row.id && row.standingType !== 'socio'; else eventView">
+                  <input
+                    type="text"
+                    [formControl]="editForm.controls.event"
+                    placeholder="Event"
+                    class="px-2 py-1 rounded border text-[10px] md:text-[11px] w-28"
+                  />
+                </ng-container>
+                <ng-template #eventView>{{ row.event || '—' }}</ng-template>
+              </td>
+              <td class="py-2 pr-4 align-top whitespace-nowrap">
+                <ng-container *ngIf="editingId() === row.id; else gameView">
+                  <input
+                    type="number"
+                    min="1"
+                    [formControl]="editForm.controls.game"
+                    class="px-2 py-1 rounded border text-[10px] md:text-[11px] w-14"
+                  />
+                </ng-container>
+                <ng-template #gameView>{{ row.game }}</ng-template>
+              </td>
               <td class="py-2 pr-4 align-top whitespace-nowrap">
                 <div class="flex flex-col gap-1">
                   <input
@@ -172,28 +214,47 @@
                 />
               </td>
               <td class="py-2 pr-4 align-top">
-                <ng-container *ngIf="row.type === 'h2h'; else multi">
-                  <span
-                    class="px-2 py-0.5 rounded-full text-white text-[10px] md:text-[11px] font-medium"
-                    [style.background-color]="colorFor(row.teams?.[0])"
-                    >{{ row.teams?.[0] }}</span
-                  >
-                  <span class="text-slate-500 text-[10px] px-1">vs</span>
-                  <span
-                    class="px-2 py-0.5 rounded-full text-white text-[10px] md:text-[11px] font-medium"
-                    [style.background-color]="colorFor(row.teams?.[1])"
-                    >{{ row.teams?.[1] }}</span
-                  >
-                </ng-container>
-                <ng-template #multi>
-                  <div class="flex flex-wrap gap-1">
-                    <span
-                      *ngFor="let t of row.teams"
-                      class="px-2 py-0.5 rounded-full text-white text-[10px] md:text-[11px] font-medium"
-                      [style.background-color]="colorFor(t)"
-                      >{{ t }}</span
-                    >
+                <ng-container *ngIf="editingId() === row.id; else teamsView">
+                  <div class="flex flex-col gap-1">
+                    <select [formControl]="editForm.controls.type" (change)="onEditTypeChange()" class="px-2 py-1 rounded border text-[10px] md:text-[11px] bg-white">
+                      <option value="h2h">Head to Head</option>
+                      <option value="multi">Multiple Teams</option>
+                    </select>
+                    <div *ngIf="editForm.value.type === 'h2h'; else multiEditNote" class="flex flex-wrap gap-1">
+                      <select *ngFor="let control of editTeamsArray.controls; let ti = index" [formControl]="control" class="px-2 py-1 rounded border text-[10px] md:text-[11px] bg-white">
+                        <option value="" disabled>Select team</option>
+                        <option *ngFor="let college of (colleges$ | async)" [value]="acronym(college.name)" [disabled]="!isCollegeSelectable(college.name, ti, editTeamsArray)">{{ acronym(college.name) }}</option>
+                      </select>
+                    </div>
+                    <ng-template #multiEditNote>
+                      <span class="text-[10px] text-slate-500">All colleges included automatically.</span>
+                    </ng-template>
                   </div>
+                </ng-container>
+                <ng-template #teamsView>
+                  <ng-container *ngIf="row.type === 'h2h'; else multi">
+                    <span
+                      class="px-2 py-0.5 rounded-full text-white text-[10px] md:text-[11px] font-medium"
+                      [style.background-color]="colorFor(row.teams?.[0])"
+                      >{{ row.teams?.[0] }}</span
+                    >
+                    <span class="text-slate-500 text-[10px] px-1">vs</span>
+                    <span
+                      class="px-2 py-0.5 rounded-full text-white text-[10px] md:text-[11px] font-medium"
+                      [style.background-color]="colorFor(row.teams?.[1])"
+                      >{{ row.teams?.[1] }}</span
+                    >
+                  </ng-container>
+                  <ng-template #multi>
+                    <div class="flex flex-wrap gap-1">
+                      <span
+                        *ngFor="let t of row.teams"
+                        class="px-2 py-0.5 rounded-full text-white text-[10px] md:text-[11px] font-medium"
+                        [style.background-color]="colorFor(t)"
+                        >{{ t }}</span
+                      >
+                    </div>
+                  </ng-template>
                 </ng-template>
               </td>
               <td class="py-2 pr-4 align-top">
@@ -242,31 +303,61 @@
               </td>
               <td class="py-2 pr-4 text-right align-top whitespace-nowrap">
                 <div class="flex justify-end gap-2">
-                <button
-                  type="button"
-                  (click)="deleteSchedule(row)"
-                  class="inline-flex items-center gap-1 px-2 py-1 rounded bg-red-600/90 hover:bg-red-700 text-white text-[10px] md:text-[11px] font-medium shadow"
-                  [attr.aria-label]="'Delete schedule entry for ' + row.sport + ' game ' + row.game"
-                  title="Delete schedule"
-                >
-                  <svg
-                    class="w-3.5 h-3.5"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
+                <ng-container *ngIf="editingId() === row.id; else rowActions">
+                  <button
+                    type="button"
+                    (click)="saveEdit(row)"
+                    [disabled]="!canSaveEdit(row)"
+                    class="inline-flex items-center gap-1 px-2 py-1 rounded bg-emerald-600/90 hover:bg-emerald-700 text-white text-[10px] md:text-[11px] font-medium shadow disabled:opacity-40"
+                    title="Save changes"
                   >
-                    <polyline points="3 6 5 6 21 6" />
-                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
-                    <path d="M10 11v6" />
-                    <path d="M14 11v6" />
-                    <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
-                  </svg>
-                  Delete
-                </button>
+                    Save
+                  </button>
+                  <button
+                    type="button"
+                    (click)="cancelEdit()"
+                    class="inline-flex items-center gap-1 px-2 py-1 rounded bg-slate-400/90 hover:bg-slate-500 text-white text-[10px] md:text-[11px] font-medium shadow"
+                    title="Cancel editing"
+                  >
+                    Cancel
+                  </button>
+                </ng-container>
+                <ng-template #rowActions>
+                  <button
+                    type="button"
+                    (click)="startEdit(row)"
+                    class="inline-flex items-center gap-1 px-2 py-1 rounded bg-indigo-600/90 hover:bg-indigo-700 text-white text-[10px] md:text-[11px] font-medium shadow"
+                    [attr.aria-label]="'Edit schedule entry for ' + row.sport + ' game ' + row.game"
+                    title="Edit schedule"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    (click)="deleteSchedule(row)"
+                    class="inline-flex items-center gap-1 px-2 py-1 rounded bg-red-600/90 hover:bg-red-700 text-white text-[10px] md:text-[11px] font-medium shadow"
+                    [attr.aria-label]="'Delete schedule entry for ' + row.sport + ' game ' + row.game"
+                    title="Delete schedule"
+                  >
+                    <svg
+                      class="w-3.5 h-3.5"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <polyline points="3 6 5 6 21 6" />
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                      <path d="M10 11v6" />
+                      <path d="M14 11v6" />
+                      <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                    </svg>
+                    Delete
+                  </button>
+                </ng-template>
                 </div>
               </td>
             </tr>

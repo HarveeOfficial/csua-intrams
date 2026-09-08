@@ -111,7 +111,16 @@ export class DataApi {
     return this.http.patch<ScheduleEntry>(`${this.baseUrl}/schedule/${encodeURIComponent(id)}`, { winner });
   }
 
-  updateScheduleDetails(id: string, details: { scheduledAt?: string | null; venue?: string | null }): Observable<ScheduleEntry> {
+  updateScheduleDetails(id: string, details: {
+    scheduledAt?: string | null;
+    venue?: string | null;
+    sport?: string;
+    category?: string;
+    event?: string | null;
+    game?: number;
+    teams?: string[];
+    type?: 'h2h' | 'multi';
+  }): Observable<ScheduleEntry> {
     return this.http.patch<ScheduleEntry>(`${this.baseUrl}/schedule/${encodeURIComponent(id)}`, details);
   }
 

@@ -64,4 +64,56 @@ class ScheduleApiTest extends TestCase
         $deleteResponse = $this->deleteJson("/api/schedule/{$id}");
         $deleteResponse->assertNoContent();
     }
+
+    public function test_schedule_details_can_be_edited(): void
+    {
+        $user = User::factory()->create(['role' => 'admin']);
+        Sanctum::actingAs($user);
+
+        College::query()->create([
+            'code' => 'cics',
+            'name' => 'CICS',
+            'color' => '#123456',
+        ]);
+        College::query()->create([
+            'code' => 'cfas',
+            'name' => 'CFAS',
+            'color' => '#654321',
+        ]);
+        College::query()->create([
+            'code' => 'coe',
+            'name' => 'COE',
+            'color' => '#abcdef',
+        ]);
+
+        $createResponse = $this->postJson('/api/schedule', [
+            'sport' => 'Basketball 5v5',
+            'category' => 'Men',
+            'event' => 'Basketball 5v5 Game 1',
+            'game' => 1,
+            'teams' => ['CICS', 'CFAS'],
+            'type' => 'h2h',
+            'winner' => 'CICS',
+            'createdAt' => 1720000000000,
+        ]);
+        $id = $createResponse->json('id');
+
+        $editResponse = $this->patchJson("/api/schedule/{$id}", [
+            'sport' => 'Volleyball',
+            'category' => 'Women',
+            'event' => 'Volleyball Game 1',
+            'game' => 2,
+            'teams' => ['CFAS', 'COE'],
+        ]);
+
+        $editResponse->assertOk()->assertJsonFragment([
+            'sport' => 'Volleyball',
+            'category' => 'Women',
+            'event' => 'Volleyball Game 1',
+            'game' => 2,
+        ]);
+        // changing teams should clear a previously set winner that no longer applies
+        $this->assertNull($editResponse->json('winner'));
+        $this->assertEqualsCanonicalizing(['CFAS', 'COE'], $editResponse->json('teams'));
+    }
 }
