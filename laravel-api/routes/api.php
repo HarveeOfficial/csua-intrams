@@ -29,7 +29,7 @@ Route::middleware('auth:sanctum')->group(function (): void {
     Route::patch('/events/{event}', [EventDefinitionController::class, 'update']);
     Route::delete('/events/{event}', [EventDefinitionController::class, 'destroy']);
     Route::post('/auth/logout', [AuthController::class, 'logout']);
-    Route::patch('/auth/password', [AuthController::class, 'updatePassword']);
+    Route::patch('/auth/password', [AuthController::class, 'changePassword']);
 
     // schedule: accessible to both admin and tm
     Route::post('/schedule', [ScheduleController::class, 'store']);

@@ -13,4 +13,8 @@ export function isApiRequest(url: string): boolean {
 }
 
 // Public reCAPTCHA v2 site key (safe to expose client-side).
-export const RECAPTCHA_SITE_KEY = '6LeYLKYtAAAAACK1Xy06dDhlpxECEnpX1vgSjx36';
+// Google's shared testing key always passes and is allow-listed for every domain
+// (including localhost), so local dev doesn't need the production domain allow-list.
+export const RECAPTCHA_SITE_KEY = isLocalHost
+  ? '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
+  : '6LeYLKYtAAAAACK1Xy06dDhlpxECEnpX1vgSjx36';

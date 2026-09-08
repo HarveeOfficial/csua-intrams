@@ -34,6 +34,16 @@ export class AuthApi {
     this.currentUser.set(response.user);
   }
 
+  async changePassword(currentPassword: string, newPassword: string): Promise<void> {
+    await firstValueFrom(
+      this.http.patch(`${this.baseUrl}/auth/password`, {
+        current_password: currentPassword,
+        new_password: newPassword,
+        new_password_confirmation: newPassword,
+      })
+    );
+  }
+
   async logout(): Promise<void> {
     try {
       await firstValueFrom(this.http.post(`${this.baseUrl}/auth/logout`, {}));
