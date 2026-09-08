@@ -34,12 +34,12 @@ export class AuthApi {
     this.currentUser.set(response.user);
   }
 
-  async changePassword(currentPassword: string, newPassword: string): Promise<void> {
+  async changePassword(currentPassword: string, newPassword: string, newPasswordConfirmation: string = newPassword): Promise<void> {
     await firstValueFrom(
       this.http.patch(`${this.baseUrl}/auth/password`, {
         current_password: currentPassword,
         new_password: newPassword,
-        new_password_confirmation: newPassword,
+        new_password_confirmation: newPasswordConfirmation,
       })
     );
   }
@@ -51,16 +51,6 @@ export class AuthApi {
       localStorage.removeItem(this.storageKey);
       this.currentUser.set(null);
     }
-  }
-
-  async changePassword(currentPassword: string, password: string, passwordConfirmation: string): Promise<void> {
-    await firstValueFrom(
-      this.http.patch(`${this.baseUrl}/auth/password`, {
-        current_password: currentPassword,
-        password,
-        password_confirmation: passwordConfirmation,
-      })
-    );
   }
 
   isLoggedIn(): boolean {
