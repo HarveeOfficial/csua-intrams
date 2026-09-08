@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\DownloadableFileController;
 use App\Http\Controllers\Api\EventDefinitionController;
 use App\Http\Controllers\Api\OfficialResultController;
 use App\Http\Controllers\Api\ScheduleController;
+use App\Http\Controllers\Api\SiteAnalyticsController;
 use App\Http\Controllers\Api\SportController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Middleware\EnsureAdmin;
@@ -23,6 +24,9 @@ Route::get('/events', [EventDefinitionController::class, 'index']);
 Route::get('/downloadable-files', [DownloadableFileController::class, 'index']);
 Route::get('/downloadable-files/{filename}/download', [DownloadableFileController::class, 'download']);
 Route::get('/official-result', [OfficialResultController::class, 'show']);
+Route::get('/site-analytics', [SiteAnalyticsController::class, 'index']);
+Route::post('/site-ratings', [SiteAnalyticsController::class, 'submitRating']);
+Route::post('/site-analytics', [SiteAnalyticsController::class, 'store']);
 
 Route::middleware('auth:sanctum')->group(function (): void {
     Route::post('/events', [EventDefinitionController::class, 'store']);

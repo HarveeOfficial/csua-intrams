@@ -13,7 +13,12 @@ export class App implements OnInit {
   router = inject(Router);
   protected title = 'csua-intrams';
 
+  private readonly publicRatingKey = 'csua_public_rating';
+
   currentUser = signal<UserSession | null>(null);
+  rating = signal(this.readStoredRating());
+  isRatingModalOpen = signal(false);
+  starValues = Array.from({ length: 5 }, (_, index) => index + 1);
 
   ngOnInit(): void {
     this.currentUser = this.auth.currentUser;
@@ -21,6 +26,37 @@ export class App implements OnInit {
 
   isAdminRoute() {
     return this.router.url.startsWith('/admin');
+  }
+
+  private readStoredRating(): number {
+    const raw = localStorage.getItem(this.publicRatingKey);
+    const value = Number(raw ?? 0);
+    return Number.isFinite(value) && value >= 1 && value <= 5 ? value : 0;
+  }
+
+  openRatingModal(): void {
+    this.isRatingModalOpen.set(true);
+  }
+
+  closeRatingModal(): void {
+    this.isRatingModalOpen.set(false);
+  }
+
+  selectRating(value: number): void {
+    this.rating.set(value);
+    localStorage.setItem(this.publicRatingKey, String(value));
+  }
+
+  submitRating(): void {
+    if (this.rating() <= 0) {
+      return;
+    }
+
+    this.closeRatingModal();
+  }
+
+  isStarFilled(star: number): boolean {
+    return star <= this.rating();
   }
 
   dashboardLabel(): string {

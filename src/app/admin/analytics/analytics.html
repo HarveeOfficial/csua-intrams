@@ -1,0 +1,104 @@
+<section class="engagement-panel">
+  <div class="engagement-header">
+    <div>
+      <p class="eyebrow">User engagement insights</p>
+      <h2>Analytics overview</h2>
+    </div>
+    <button type="button" class="mini-rate-btn" (click)="openRatingModal()">
+      Rate dashboard
+    </button>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card accent-blue">
+      <div class="stat-label">Total visits</div>
+      <div class="stat-value">{{ formatVisits(totalVisits()) }}</div>
+      <div class="stat-meta">+18.4% vs last week</div>
+    </div>
+
+    <div class="stat-card accent-gold">
+      <div class="stat-label">Time spent</div>
+      <div class="stat-value">{{ avgTimeSpentMinutes() }} min</div>
+      <div class="stat-meta">+7.2% avg engagement</div>
+    </div>
+
+    <div class="stat-card accent-indigo">
+      <div class="stat-label">Avg. rating</div>
+      <div class="stat-value">{{ averageRating() ? averageRating().toFixed(1) : '0.0' }}</div>
+      <div class="stat-meta">{{ ratingCount() }} public ratings</div>
+    </div>
+  </div>
+
+  <div class="chart-panel">
+    <div class="chart-card">
+      <div class="chart-header">
+        <span>Total visits</span>
+        <strong>7-day trend</strong>
+      </div>
+      <div class="bars" aria-label="Total visits trend chart">
+        @for (value of visitTrend; track value; let i = $index) {
+          <div class="bar-group">
+            <div class="bar-stack" [style.height.%]="getVisitBarHeight(value)"></div>
+            <span>{{ ['M', 'T', 'W', 'T', 'F', 'S', 'S'][i] }}</span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-header">
+        <span>Time spent</span>
+        <strong>Minutes</strong>
+      </div>
+      <div class="bars" aria-label="Time spent trend chart">
+        @for (value of timeTrend; track value; let i = $index) {
+          <div class="bar-group">
+            <div class="bar-stack bar-time" [style.height.%]="getTimeBarHeight(value)"></div>
+            <span>{{ ['M', 'T', 'W', 'T', 'F', 'S', 'S'][i] }}</span>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+@if (showRatingModal()) {
+  <div class="rating-modal-backdrop" (click)="closeRatingModal()">
+    <div
+      class="rating-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="admin-rating-title"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="rating-modal-header">
+        <h2 id="admin-rating-title">Rate this dashboard</h2>
+        <button type="button" class="close-modal" aria-label="Close rating dialog" (click)="closeRatingModal()">
+          ×
+        </button>
+      </div>
+
+      <div class="rating-stars" aria-label="Choose a rating from 1 to 5 stars">
+        @for (star of starValues; track star) {
+          <button
+            type="button"
+            class="star-button"
+            [class.filled]="isStarFilled(star)"
+            [attr.aria-label]="'Rate ' + star + ' out of 5 stars'"
+            [attr.aria-pressed]="isStarFilled(star)"
+            (click)="selectRating(star)"
+          >
+            ★
+          </button>
+        }
+      </div>
+
+      <div class="rating-modal-actions">
+        <button type="button" class="secondary-btn" (click)="closeRatingModal()">Cancel</button>
+        <button type="button" class="primary-btn" [disabled]="popupRating() === 0" (click)="submitRating()">
+          Submit
+        </button>
+      </div>
+    </div>
+  </div>
+}

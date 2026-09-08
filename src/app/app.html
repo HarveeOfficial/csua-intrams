@@ -211,6 +211,11 @@
 <footer class="site-footer">
   <div class="footer-inner">
     <p class="footer-copyright">&copy; 2026 CSUA Intramurals. All rights reserved.</p>
+
+    <button type="button" class="rate-trigger" (click)="openRatingModal()">
+      Rate Us
+    </button>
+
     <section class="emergency-hotlines" aria-labelledby="emergency-hotlines-title">
       <h2 id="emergency-hotlines-title">Emergency Hotlines</h2>
       <p>
@@ -220,3 +225,44 @@
     </section>
   </div>
 </footer>
+
+@if (isRatingModalOpen()) {
+  <div class="rating-modal-backdrop" (click)="closeRatingModal()">
+    <div
+      class="rating-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="rating-modal-title"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="rating-modal-header">
+        <h2 id="rating-modal-title">Rate this page</h2>
+        <button type="button" class="close-modal" aria-label="Close rating modal" (click)="closeRatingModal()">
+          ×
+        </button>
+      </div>
+
+      <div class="rating-stars" aria-label="Choose a rating from 1 to 5 stars">
+        @for (star of starValues; track star) {
+          <button
+            type="button"
+            class="star-button"
+            [class.filled]="isStarFilled(star)"
+            [attr.aria-label]="'Rate ' + star + ' out of 5 stars'"
+            [attr.aria-pressed]="isStarFilled(star)"
+            (click)="selectRating(star)"
+          >
+            ★
+          </button>
+        }
+      </div>
+
+      <div class="rating-modal-actions">
+        <button type="button" class="secondary-btn" (click)="closeRatingModal()">Cancel</button>
+        <button type="button" class="primary-btn" [disabled]="rating() === 0" (click)="submitRating()">
+          Submit
+        </button>
+      </div>
+    </div>
+  </div>
+}

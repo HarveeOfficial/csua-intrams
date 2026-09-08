@@ -86,6 +86,18 @@
           <span class="ml-1 inline-flex items-center text-[9px] font-semibold uppercase tracking-wider bg-white/20 group-hover:bg-white/25 px-2 py-0.5 rounded-full backdrop-blur-sm transition-colors">Manage</span>
         </a>
         <a
+          *ngIf="isAdmin()"
+          routerLink="/admin/analytics"
+          routerLinkActive="ring-2 ring-offset-2 ring-fuchsia-400"
+          class="group inline-flex items-center gap-2 text-[11px] font-medium px-3 py-2 rounded-full bg-gradient-to-r from-fuchsia-500 via-violet-500 to-indigo-500 text-white shadow-sm hover:shadow-md hover:from-fuchsia-600 hover:to-indigo-600 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-fuchsia-400 active:scale-[.97] snap-start"
+          aria-label="Open analytics"
+        >
+          <span class="relative flex items-center">
+            <span class="tracking-wide">📊 Analytics</span>
+          </span>
+          <span class="ml-1 inline-flex items-center text-[9px] font-semibold uppercase tracking-wider bg-white/20 group-hover:bg-white/25 px-2 py-0.5 rounded-full backdrop-blur-sm transition-colors">View</span>
+        </a>
+        <a
           routerLink="/admin/user-manual"
           routerLinkActive="ring-2 ring-offset-2 ring-slate-400"
           class="group inline-flex items-center gap-2 text-[11px] font-medium px-3 py-2 rounded-full bg-gradient-to-r from-slate-500 via-slate-600 to-slate-500 text-white shadow-sm hover:shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-400 active:scale-[.97] snap-start"

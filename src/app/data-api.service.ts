@@ -62,6 +62,15 @@ export interface IOfficialResult {
   certifiedAt: string | null;
 }
 
+export interface ISiteAnalytics {
+  totalVisits: number;
+  avgTimeSpentMinutes: number;
+  visitTrend: number[];
+  timeTrend: number[];
+  avgRating: number;
+  ratingCount: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class DataApi {
   private http = inject(HttpClient);
@@ -196,5 +205,27 @@ export class DataApi {
 
   updateOfficialResult(isOfficial: boolean): Observable<IOfficialResult> {
     return this.http.patch<IOfficialResult>(`${this.baseUrl}/official-result`, { is_official: isOfficial });
+  }
+
+  getSiteAnalytics(): Observable<ISiteAnalytics> {
+    return this.http.get<ISiteAnalytics>(`${this.baseUrl}/site-analytics`);
+  }
+
+  updateSiteAnalytics(payload: {
+    totalVisits?: number;
+    avgTimeSpentMinutes?: number;
+    visitTrend?: number[];
+    timeTrend?: number[];
+  }): Observable<ISiteAnalytics> {
+    return this.http.post<ISiteAnalytics>(`${this.baseUrl}/site-analytics`, {
+      total_visits: payload.totalVisits,
+      avg_time_spent_minutes: payload.avgTimeSpentMinutes,
+      visit_trend: payload.visitTrend,
+      time_trend: payload.timeTrend,
+    });
+  }
+
+  submitSiteRating(rating: number): Observable<{ rating: number; average: number; count: number }> {
+    return this.http.post<{ rating: number; average: number; count: number }>(`${this.baseUrl}/site-ratings`, { rating });
   }
 }
