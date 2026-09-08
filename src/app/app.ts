@@ -24,7 +24,7 @@ export class App implements OnInit {
   }
 
   dashboardLabel(): string {
-    return this.currentUser()?.role === 'admin' ? 'Admin Dashboard' : 'Team Manager Dashboard';
+    return this.currentUser()?.role === 'admin' ? 'Admin Dashboard' : 'Tournament Manager Dashboard';
   }
 
   dashboardAriaLabel(): string {

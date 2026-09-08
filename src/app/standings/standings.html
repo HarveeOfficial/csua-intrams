@@ -21,6 +21,7 @@
 
   <section class="modern-card">
     <h1 class="text-3xl font-bold text-center sub-gradient-title">Sports Standing</h1>
+
     <!-- Points-Based Overall Ranking -->
     <app-points-based-ranking
       [colleges]="colleges()"
@@ -37,6 +38,18 @@
       standingType="socio"
     ></app-points-based-ranking>
     <app-medal-standings [colleges]="colleges()" standingType="socio"></app-medal-standings>
+  </section>
+
+  <section class="modern-card">
+    @if (isOfficial()) {
+    <div class="result-status-banner official">
+      ✅ Disclaimer: These are the <strong>OFFICIAL</strong> results of the Campus Intramurals, certified by the administrator upon completion of all Intramural activities and subsequent validation and approval through the appropriate institutional process. These results have been published through the designated institutional channels.
+    </div>
+    } @else {
+    <div class="result-status-banner unofficial">
+      ⚠️ Disclaimer: The results presented herein are provisional and should not be considered the official results of the Campus Intramurals. The final results shall be deemed official only upon completion of all Intramural activities and subsequent validation and approval through the appropriate institutional process. The officially validated results shall thereafter be published through the designated institutional channels.
+    </div>
+    }
   </section>
 
   <!-- <div class="modern-card">

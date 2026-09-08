@@ -54,4 +54,9 @@ export const routes: Routes = [
     canActivate: [adminGuard],
     loadComponent: () => import('./downloadable-files/downloadable-files').then((m) => m.DownloadableFiles),
   },
+  {
+    path: 'user-manual',
+    canActivate: [authenticatedGuard],
+    loadComponent: () => import('./user-manual/user-manual').then((m) => m.UserManual),
+  },
 ];

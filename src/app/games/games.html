@@ -48,6 +48,8 @@
                 <th class="px-4 py-3">#</th>
                 <th class="px-4 py-3">Category</th>
                 <th class="px-4 py-3">Event</th>
+                <th class="px-4 py-3">When</th>
+                <th class="px-4 py-3">Venue</th>
                 <th class="px-4 py-3">Teams</th>
                 <th class="px-4 py-3">Result</th>
               </tr>
@@ -57,6 +59,8 @@
                 <td class="px-4 py-3 font-semibold text-slate-500">{{ row.game }}</td>
                 <td class="px-4 py-3">{{ row.category || '-' }}</td>
                 <td class="px-4 py-3">{{ row.event || '-' }}</td>
+                <td class="px-4 py-3">{{ row.scheduledAt ? (row.scheduledAt | date:'MMM d, y · h:mm a') : 'TBA' }}</td>
+                <td class="px-4 py-3">{{ row.venue || '-' }}</td>
                 <td class="px-4 py-3">
                   <ng-container *ngIf="row.type === 'h2h'; else multiTeams">
                     <span class="font-semibold">{{ row.teams?.[0] }}</span>

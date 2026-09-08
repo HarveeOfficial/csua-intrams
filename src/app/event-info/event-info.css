@@ -79,6 +79,33 @@ h2 {
   margin-bottom: 1.5rem;
 }
 
+.ceo-message {
+  text-align: center;
+}
+
+.ceo-photo {
+  width: 6.5rem;
+  height: 6.5rem;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 auto 1rem;
+  border: 3px solid #f59e0b;
+}
+
+.ceo-body {
+  max-width: 42rem;
+  margin: 1rem auto 0;
+  color: #475569;
+  line-height: 1.7;
+}
+
+.ceo-signature {
+  margin-top: 1rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+
 .office-block h4 {
   margin: 0 0 0.5rem;
   color: #334155;

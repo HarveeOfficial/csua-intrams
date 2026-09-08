@@ -31,7 +31,7 @@ class ScheduleController extends Controller
         }
 
         $entries = $query
-            ->with(['sport', 'eventDefinition', 'category', 'winnerCollege', 'teams.college'])
+            ->with(['sport.users', 'eventDefinition.assignedUsers', 'category', 'winnerCollege', 'teams.college'])
             ->get()
             ->sortBy([
                 fn (ScheduleEntry $entry): string => $entry->sport?->name ?? '',
@@ -104,6 +104,8 @@ class ScheduleController extends Controller
                 'event_category_id' => $category->id,
                 'event_name' => $eventName,
                 'game' => (int) $request->integer('game'),
+                'scheduled_at' => $request->filled('scheduledAt') ? $request->date('scheduledAt') : null,
+                'venue' => $request->filled('venue') ? trim((string) $request->input('venue')) : null,
                 'type' => (string) $request->input('type'),
                 'winner_college_id' => $winnerCollege?->id,
                 'multi_winners' => null,
@@ -129,14 +131,14 @@ class ScheduleController extends Controller
             return $entry;
         });
 
-        $entry->load(['sport', 'eventDefinition', 'category', 'winnerCollege', 'teams.college']);
+        $entry->load(['sport.users', 'eventDefinition.assignedUsers', 'category', 'winnerCollege', 'teams.college']);
 
         return response()->json($this->toLegacyPayload($entry), 201);
     }
 
     public function updateWinner(UpdateScheduleWinnerRequest $request, string $id): JsonResponse
     {
-        $entry = ScheduleEntry::query()->with(['sport', 'category', 'winnerCollege', 'teams.college'])->find($id);
+        $entry = ScheduleEntry::query()->with(['sport.users', 'eventDefinition.assignedUsers', 'category', 'winnerCollege', 'teams.college'])->find($id);
         if (! $entry) {
             return response()->json(['message' => 'Schedule entry not found'], 404);
         }
@@ -167,10 +169,16 @@ class ScheduleController extends Controller
         }
 
         $entry->winner_college_id = $winnerCollege?->id;
+        if ($request->has('scheduledAt')) {
+            $entry->scheduled_at = $request->filled('scheduledAt') ? $request->date('scheduledAt') : null;
+        }
+        if ($request->has('venue')) {
+            $entry->venue = $request->filled('venue') ? trim((string) $request->input('venue')) : null;
+        }
         $entry->legacy_updated_at_ms = now()->valueOf();
         $entry->save();
 
-        $entry->load(['sport', 'eventDefinition', 'category', 'winnerCollege', 'teams.college']);
+        $entry->load(['sport.users', 'eventDefinition.assignedUsers', 'category', 'winnerCollege', 'teams.college']);
 
         return response()->json($this->toLegacyPayload($entry));
     }
@@ -196,9 +204,14 @@ class ScheduleController extends Controller
 
     private function toLegacyPayload(ScheduleEntry $entry): array
     {
+        $teamManagers = $entry->sport?->users ?? $entry->eventDefinition?->assignedUsers;
+
         return [
             'id' => $entry->id,
+            'scheduledAt' => $entry->scheduled_at?->toIso8601String(),
+            'venue' => $entry->venue,
             'sport' => $entry->sport?->name ?? $entry->eventDefinition?->name ?? '',
+            'teamManagers' => $teamManagers ? $teamManagers->pluck('name')->values()->all() : [],
             'standingType' => $entry->standing_type ?? 'sports',
             'eventDefinitionId' => $entry->event_definition_id,
             'category' => $entry->category?->name ?? '-',

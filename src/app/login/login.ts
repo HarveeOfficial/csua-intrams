@@ -29,6 +29,11 @@ export class Login implements AfterViewInit, OnDestroy {
 
   authError = signal<string | null>(null);
   recaptchaToken = signal<string | null>(null);
+  showPassword = signal(false);
+
+  togglePasswordVisibility() {
+    this.showPassword.update((v) => !v);
+  }
 
   async ngAfterViewInit() {
     await this.loadRecaptchaScript();

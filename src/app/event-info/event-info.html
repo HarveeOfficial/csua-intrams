@@ -12,6 +12,15 @@
     <button
       type="button"
       role="tab"
+      [class.active]="activeTab() === 'ceo'"
+      [attr.aria-selected]="activeTab() === 'ceo'"
+      (click)="selectTab('ceo')"
+    >
+      CEO's Message
+    </button>
+    <button
+      type="button"
+      role="tab"
       [class.active]="activeTab() === 'campus'"
       [attr.aria-selected]="activeTab() === 'campus'"
       (click)="selectTab('campus')"
@@ -182,6 +191,17 @@
         </tbody>
       </table>
     </div>
+  </section>
+  }
+
+  @if (activeTab() === 'ceo') {
+  <section class="event-group ceo-message">
+    @if (ceoMessage.photoUrl) {
+      <img class="ceo-photo" [src]="ceoMessage.photoUrl" [alt]="ceoMessage.name" />
+    }
+    <h3>A Message from Our {{ ceoMessage.title }}</h3>
+    <p class="ceo-body">{{ ceoMessage.message }}</p>
+    <p class="ceo-signature">— {{ ceoMessage.name }}, {{ ceoMessage.title }}</p>
   </section>
   }
 </section>

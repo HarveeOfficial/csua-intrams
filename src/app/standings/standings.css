@@ -13,6 +13,26 @@
   animation: fadeIn 0.6s ease;
 }
 
+.result-status-banner {
+  border-radius: 0.75rem;
+  padding: 0.85rem 1.1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-align: center;
+  line-height: 1.5;
+}
+.result-status-banner.unofficial {
+  background: #fff7ed;
+  border: 1px solid #fdba74;
+  color: #9a3412;
+}
+.result-status-banner.official {
+  background: #ecfdf5;
+  border: 1px solid #6ee7b7;
+  color: #065f46;
+}
+
+
 /* Logo marquee */
 .logo-marquee {
   position: relative;

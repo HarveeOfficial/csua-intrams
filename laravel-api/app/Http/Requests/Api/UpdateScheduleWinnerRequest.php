@@ -18,6 +18,8 @@ class UpdateScheduleWinnerRequest extends FormRequest
             'winner.first' => ['nullable', 'string', 'max:100'],
             'winner.second' => ['nullable', 'string', 'max:100'],
             'winner.third' => ['nullable', 'string', 'max:100'],
+            'scheduledAt' => ['nullable', 'date'],
+            'venue' => ['nullable', 'string', 'max:255'],
         ];
     }
 }

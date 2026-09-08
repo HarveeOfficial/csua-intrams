@@ -8,6 +8,7 @@ import {
 } from '@angular/router';
 import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { DataApi } from '../data-api.service';
 
 @Component({
   selector: 'app-admin',
@@ -18,6 +19,11 @@ import { FormsModule } from '@angular/forms';
 export class Admin {
   private auth = inject(AuthApi);
   private router = inject(Router);
+  private dataApi = inject(DataApi);
+
+  isOfficialResult = signal(false);
+  certifiedBy = signal<string | null>(null);
+  savingCertification = signal(false);
 
   currentUser = this.auth.currentUser;
   isAdmin = () => this.auth.currentUser()?.role === 'admin';
@@ -32,7 +38,7 @@ export class Admin {
   changingPassword = signal(false);
 
   dashboardTitle(): string {
-    return this.isAdmin() ? 'Admin Dashboard' : 'Team Manager Dashboard';
+    return this.isAdmin() ? 'Admin Dashboard' : 'Tournament Manager Dashboard';
   }
 
   dashboardDescription(): string {
@@ -88,5 +94,33 @@ export class Admin {
   async logout() {
     await this.auth.logout();
     this.router.navigate(['/standings']);
+  }
+
+  ngOnInit(): void {
+    this.dataApi.getOfficialResult().subscribe((result) => {
+      this.isOfficialResult.set(result.isOfficial);
+      this.certifiedBy.set(result.certifiedBy);
+    });
+  }
+
+  toggleOfficialResult(checked: boolean) {
+    if (checked) {
+      const confirmed = confirm(
+        'Certify this as the OFFICIAL result of the Campus Intramurals 2026? This will be shown publicly on the standings page.'
+      );
+      if (!confirmed) return;
+    }
+
+    this.savingCertification.set(true);
+    this.dataApi.updateOfficialResult(checked).subscribe({
+      next: (result) => {
+        this.isOfficialResult.set(result.isOfficial);
+        this.certifiedBy.set(result.certifiedBy);
+        this.savingCertification.set(false);
+      },
+      error: () => {
+        this.savingCertification.set(false);
+      },
+    });
   }
 }

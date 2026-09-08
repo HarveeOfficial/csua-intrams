@@ -41,7 +41,7 @@
         <ng-container *ngIf="filtered.length; else noMatches">
           <section *ngFor="let group of filtered; trackBy: trackGroup" class="sport-section">
             <div class="sport-heading">
-              <h3>{{ group.sport }}</h3>
+              <h3>{{ group.sport }}<span *ngIf="teamManagerNames(group) as tmNames" class="tm-name"> · TM: {{ tmNames }}</span></h3>
               <span>{{ group.rows.length }} {{ group.rows.length === 1 ? 'game' : 'games' }}</span>
             </div>
 
@@ -53,6 +53,8 @@
                       <th class="px-4 py-3">#</th>
                       <th class="px-4 py-3">Category</th>
                       <th class="px-4 py-3">Event</th>
+                      <th class="px-4 py-3">When</th>
+                      <th class="px-4 py-3">Venue</th>
                       <th class="px-4 py-3">Teams</th>
                       <th class="px-4 py-3">Result</th>
                     </tr>
@@ -62,6 +64,8 @@
                       <td class="px-4 py-3 font-semibold text-slate-500">{{ row.game }}</td>
                       <td class="px-4 py-3">{{ row.category || '-' }}</td>
                       <td class="px-4 py-3">{{ row.event || '-' }}</td>
+                      <td class="px-4 py-3">{{ row.scheduledAt ? (row.scheduledAt | date:'MMM d, y · h:mm a') : 'TBA' }}</td>
+                      <td class="px-4 py-3">{{ row.venue || '-' }}</td>
                       <td class="px-4 py-3">
                         <ng-container *ngIf="row.type === 'h2h'; else multiTeams">
                           <span class="font-semibold">{{ row.teams?.[0] }}</span>
@@ -98,6 +102,7 @@
                     <div>
                       <p class="font-semibold text-sm">Game #{{ row.game }}</p>
                       <p class="text-xs text-slate-500">{{ row.category || 'Open category' }}<span *ngIf="row.event"> · {{ row.event }}</span></p>
+                      <p class="text-xs text-slate-500">{{ row.scheduledAt ? (row.scheduledAt | date:'MMM d, y · h:mm a') : 'TBA' }}<span *ngIf="row.venue"> · {{ row.venue }}</span></p>
                     </div>
                     <ng-container *ngIf="row.type === 'multi'; else mobileSingleWinner">
                       <span class="status-chip">{{ row.winner?.first || row.winner?.second || row.winner?.third ? 'Completed' : 'Scheduled' }}</span>

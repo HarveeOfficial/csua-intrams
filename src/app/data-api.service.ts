@@ -10,6 +10,8 @@ export interface ScheduleEntry {
   category: string;
   event: string | null;
   game: number;
+  scheduledAt?: string | null;
+  venue?: string | null;
   teams: string[];
   type: 'h2h' | 'multi';
   winner: string | { first: string | null; second: string | null; third: string | null } | null;
@@ -17,6 +19,7 @@ export interface ScheduleEntry {
   updatedAt?: number;
   standingType?: 'sports' | 'socio';
   eventDefinitionId?: number | null;
+  teamManagers?: string[];
 }
 
 export interface ISportRecord {
@@ -51,6 +54,12 @@ export interface IDownloadableFile {
   url: string;
   size: number;
   uploadedAt: number;
+}
+
+export interface IOfficialResult {
+  isOfficial: boolean;
+  certifiedBy: string | null;
+  certifiedAt: string | null;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -100,6 +109,10 @@ export class DataApi {
 
   updateWinner(id: string, winner: string | { first: string | null; second: string | null; third: string | null } | null): Observable<ScheduleEntry> {
     return this.http.patch<ScheduleEntry>(`${this.baseUrl}/schedule/${encodeURIComponent(id)}`, { winner });
+  }
+
+  updateScheduleDetails(id: string, details: { scheduledAt?: string | null; venue?: string | null }): Observable<ScheduleEntry> {
+    return this.http.patch<ScheduleEntry>(`${this.baseUrl}/schedule/${encodeURIComponent(id)}`, details);
   }
 
   deleteSchedule(id: string): Observable<void> {
@@ -166,5 +179,13 @@ export class DataApi {
 
   deleteSport(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/sports/${id}`);
+  }
+
+  getOfficialResult(): Observable<IOfficialResult> {
+    return this.http.get<IOfficialResult>(`${this.baseUrl}/official-result`);
+  }
+
+  updateOfficialResult(isOfficial: boolean): Observable<IOfficialResult> {
+    return this.http.patch<IOfficialResult>(`${this.baseUrl}/official-result`, { is_official: isOfficial });
   }
 }

@@ -24,9 +24,11 @@ export class Standings {
   colleges = signal<ICollege[]>([]);
   categoryExpanded = signal<Set<string>>(new Set());
   eventExpanded = signal<Set<string>>(new Set());
+  isOfficial = signal(false);
 
   ngOnInit(): void {
     this.getColleges().subscribe((colleges) => this.colleges.set(colleges));
+    this.api.getOfficialResult().subscribe((result) => this.isOfficial.set(result.isOfficial));
   }
 
   getColleges(): Observable<ICollege[]> {

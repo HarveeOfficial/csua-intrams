@@ -97,4 +97,10 @@ export class EventSchedAndStats {
   trackGroup(_index: number, group: ScheduleGroup) {
     return group.sport;
   }
+
+  teamManagerNames(group: ScheduleGroup): string {
+    const names = new Set<string>();
+    group.rows.forEach((row) => (row.teamManagers || []).forEach((name: string) => names.add(name)));
+    return [...names].join(', ');
+  }
 }

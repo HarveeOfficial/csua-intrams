@@ -96,6 +96,14 @@
 	font-weight: 800;
 }
 
+.sport-heading h3 .tm-name {
+	color: #64748b;
+	font-size: 0.85rem;
+	font-weight: 600;
+	text-transform: none;
+	letter-spacing: normal;
+}
+
 .sport-heading span {
 	color: #64748b;
 	font-size: 0.75rem;

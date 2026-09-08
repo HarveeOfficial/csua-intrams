@@ -95,7 +95,7 @@ class UserController extends Controller
 
         if ($assignedEventIds->isNotEmpty()) {
             throw ValidationException::withMessages([
-                'socioEventIds' => ['Each socio event can only be assigned to one team manager.'],
+                'socioEventIds' => ['Each socio event can only be assigned to one tournament manager.'],
             ]);
         }
     }

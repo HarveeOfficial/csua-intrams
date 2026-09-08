@@ -21,6 +21,8 @@ class StoreScheduleEntryRequest extends FormRequest
             'category' => ['nullable', 'string', 'max:255'],
             'event' => ['nullable', 'string', 'max:255'],
             'game' => ['required', 'integer', 'min:1'],
+            'scheduledAt' => ['nullable', 'date'],
+            'venue' => ['nullable', 'string', 'max:255'],
             'teams' => ['required', 'array', 'min:2'],
             'teams.*' => ['required', 'string', 'max:100'],
             'type' => ['required', 'in:h2h,multi'],

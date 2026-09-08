@@ -41,6 +41,9 @@ export class EventSchedAndStats {
     game: new FormControl<number | null>(null, {
       validators: [Validators.required, Validators.min(1)],
     }),
+    scheduledDate: new FormControl('', { nonNullable: true }),
+    scheduledTime: new FormControl('', { nonNullable: true }),
+    venue: new FormControl('', { nonNullable: true }),
     type: new FormControl<'h2h' | 'multi'>('h2h', { nonNullable: true }),
     teams: new FormArray<FormControl<string>>([
       new FormControl('', {
@@ -189,6 +192,8 @@ export class EventSchedAndStats {
       category: raw.category?.trim() || '-',
       event: raw.event?.trim() || null,
       game: raw.game,
+      scheduledAt: this.combineDateTime(raw.scheduledDate, raw.scheduledTime),
+      venue: raw.venue?.trim() || null,
       teams,
       winner: null,
       createdAt: Date.now(),
@@ -211,6 +216,9 @@ export class EventSchedAndStats {
       category: '',
       event: '',
       game: null,
+      scheduledDate: '',
+      scheduledTime: '',
+      venue: '',
     });
     // reset teams controls
     while (this.teamsArray.length) this.teamsArray.removeAt(0);
@@ -250,6 +258,60 @@ export class EventSchedAndStats {
 
   async clearWinner(row: any) {
     await this.updateWinner(row, null);
+  }
+
+  async updateScheduleDate(row: any, value: string) {
+    if (!row?.id) return;
+    const time = row.scheduledAt ? this.toTimeInputValue(row.scheduledAt) : '';
+    const scheduledAt = this.combineDateTime(value, time);
+    try {
+      await firstValueFrom(this.api.updateScheduleDetails(row.id, { scheduledAt }));
+    } catch (err) {
+      this.reportError('update', err);
+      return;
+    }
+    this.refreshSchedule();
+  }
+
+  async updateScheduleTime(row: any, value: string) {
+    if (!row?.id) return;
+    const date = row.scheduledAt ? this.toDateInputValue(row.scheduledAt) : '';
+    const scheduledAt = this.combineDateTime(date, value);
+    try {
+      await firstValueFrom(this.api.updateScheduleDetails(row.id, { scheduledAt }));
+    } catch (err) {
+      this.reportError('update', err);
+      return;
+    }
+    this.refreshSchedule();
+  }
+
+  async updateScheduleVenue(row: any, value: string) {
+    if (!row?.id) return;
+    try {
+      await firstValueFrom(this.api.updateScheduleDetails(row.id, { venue: value.trim() || null }));
+    } catch (err) {
+      this.reportError('update', err);
+      return;
+    }
+    this.refreshSchedule();
+  }
+
+  combineDateTime(date: string | null | undefined, time: string | null | undefined): string | null {
+    if (!date) return null;
+    return new Date(`${date}T${time || '00:00'}`).toISOString();
+  }
+
+  toDateInputValue(iso: string): string {
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return '';
+    return d.toISOString().slice(0, 10);
+  }
+
+  toTimeInputValue(iso: string): string {
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return '';
+    return d.toTimeString().slice(0, 5);
   }
 
   async deleteSchedule(row: any) {

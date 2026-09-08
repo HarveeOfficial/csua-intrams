@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-export type EventInfoTab = 'campus' | 'sports' | 'socio';
+export type EventInfoTab = 'campus' | 'sports' | 'socio' | 'ceo';
 
 export interface IEventInfoRow {
   event: string;
@@ -35,16 +35,25 @@ export class EventInfo {
       'Maintaining official standings and records for all participating colleges',
     ],
     contact: {
-      office: 'Campus Sports Office, CSU Main Campus',
-      email: 'sportsoffice@csu.edu.ph',
-      phone: '(000) 000-0000',
-      hours: 'Monday - Friday, 8:00 AM - 5:00 PM',
+      office: 'CSU Aparri Sports Office',
+      email: 'csuasport@gmail.com',
+      phone: '+63 994-7900-651',
+      hours: 'Wednesday, 1:00 PM - 5:00 PM',
     },
   };
 
   selectTab(tab: EventInfoTab): void {
     this.activeTab.set(tab);
   }
+
+  // Placeholder copy - update with the CEO's actual message and photo.
+  ceoMessage = {
+    name: 'Prof. Policarpio L. Mabborang Jr., ASEAN Engr.',
+    title: 'Campus Executive Officer',
+    photoUrl: '/mabborang.jpg',
+    message:
+      'It is with great pride and enthusiasm that I extend my full support to the Campus Intramurals 2026. This yearly celebration of sportsmanship, talent, and camaraderie reflects the very best of our student community, and I am confident that every college will compete with honor and unity. Let us make this year\'s intramurals a memorable and successful event for everyone involved.',
+  };
 
   // Individual athletics events: 1 gold per athlete fielded.
   athleticsIndividual: IEventInfoGroup = {
@@ -96,13 +105,23 @@ export class EventInfo {
       { event: 'Football', participants: '11', equivalentGold: '11 Golds' },
       { event: 'Futsal', participants: '5', equivalentGold: '5 Golds' },
       { event: 'Karate-do', participants: '1', equivalentGold: '1 Gold' },
+      { event: 'Karate-do (Kata Individual)', participants: '1', equivalentGold: '1 Gold' },
+      { event: 'Karate-do (Kata Team)', participants: '3', equivalentGold: '3 Gold' },
       { event: 'Lawn Tennis - Doubles', participants: '2', equivalentGold: '2 Gold' },
       { event: 'Lawn Tennis - Singles', participants: '1', equivalentGold: '1 Gold' },
+      { event: 'Pencak Silat', participants: '1', equivalentGold: '1 Gold' },
+      { event: 'Pencak Silat (Jurus Individual (Bare-Handed))', participants: '1', equivalentGold: '1 Gold' },
+      { event: 'Pencak Silat (Jurus Individual (Golok))', participants: '1', equivalentGold: '1 Gold' },
+      { event: 'Pencak Silat (Jurus Individual (Tongkat))', participants: '1', equivalentGold: '1 Gold' },
+      { event: 'Pencak Silat (Jurus Team)', participants: '3', equivalentGold: '3 Gold' },
       { event: 'Sepak Takraw', participants: '3', equivalentGold: '3 Golds' },
       { event: 'Softball', participants: '9', equivalentGold: '9 Golds' },
       { event: 'Table Tennis – Doubles', participants: '2', equivalentGold: '2 Golds' },
       { event: 'Table Tennis – Singles', participants: '1', equivalentGold: '1 Gold' },
       { event: 'Taekwondo', participants: '1', equivalentGold: '1 Gold' },
+      { event: 'Taekwondo (Poomsae Individual)', participants: '1', equivalentGold: '1 Gold' },
+      { event: 'Taekwondo (Poomsae Duo)', participants: '2', equivalentGold: '2 Gold' },
+      { event: 'Taekwondo (Poomsae Team)', participants: '3', equivalentGold: '3 Gold' },
       { event: 'Volleyball', participants: '6', equivalentGold: '6 Golds' },
     ],
   };

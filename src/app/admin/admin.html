@@ -85,6 +85,16 @@
           </span>
           <span class="ml-1 inline-flex items-center text-[9px] font-semibold uppercase tracking-wider bg-white/20 group-hover:bg-white/25 px-2 py-0.5 rounded-full backdrop-blur-sm transition-colors">Manage</span>
         </a>
+        <a
+          routerLink="/admin/user-manual"
+          routerLinkActive="ring-2 ring-offset-2 ring-slate-400"
+          class="group inline-flex items-center gap-2 text-[11px] font-medium px-3 py-2 rounded-full bg-gradient-to-r from-slate-500 via-slate-600 to-slate-500 text-white shadow-sm hover:shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-400 active:scale-[.97] snap-start"
+          aria-label="Open user manual"
+        >
+          <span class="relative flex items-center">
+            <span class="tracking-wide">📖 User Manual</span>
+          </span>
+        </a>
       </div>
     </div>
     <div class="flex items-center gap-2 w-full sm:w-auto">
@@ -102,6 +112,34 @@
         Logout
       </button>
     </div>
+  </div>
+
+  <!-- Official Result Certification -->
+  <div
+    *ngIf="isAdmin()"
+    class="mb-6 rounded-lg border px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4"
+    [class.bg-emerald-50]="isOfficialResult()"
+    [class.border-emerald-300]="isOfficialResult()"
+    [class.bg-amber-50]="!isOfficialResult()"
+    [class.border-amber-300]="!isOfficialResult()"
+  >
+    <label class="inline-flex items-center gap-2 font-medium text-sm cursor-pointer select-none">
+      <input
+        type="checkbox"
+        [checked]="isOfficialResult()"
+        [disabled]="savingCertification()"
+        (change)="toggleOfficialResult($any($event.target).checked)"
+        class="h-4 w-4 rounded"
+      />
+      Certify official result of the Campus Intramurals 2026
+    </label>
+    <span class="text-xs" [class.text-emerald-700]="isOfficialResult()" [class.text-amber-700]="!isOfficialResult()">
+      @if (isOfficialResult()) {
+        ✅ Results are certified OFFICIAL{{ certifiedBy() ? ' by ' + certifiedBy() : '' }}. Uncheck to mark as unofficial again.
+      } @else {
+        ⚠️ Results are currently marked as NOT official. Check this box once the results are ready to be published.
+      }
+    </span>
   </div>
 
   <!-- Change Password Modal -->

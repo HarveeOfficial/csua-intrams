@@ -25,6 +25,8 @@ class ScheduleEntry extends Model
         'event_category_id',
         'event_name',
         'game',
+        'scheduled_at',
+        'venue',
         'type',
         'winner_college_id',
         'multi_winners',
@@ -36,6 +38,7 @@ class ScheduleEntry extends Model
     {
         return [
             'multi_winners' => 'array',
+            'scheduled_at' => 'datetime',
         ];
     }
 
