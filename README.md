@@ -22,25 +22,19 @@ php artisan key:generate
 php artisan migrate
 ```
 
-5. If you already have data in the legacy Node schema (`users`, `colleges`, `schedule`), import it into normalized Laravel tables:
-
-```powershell
-php artisan intrams:import-legacy
-```
-
-6. Create or update an admin account:
+5. Create or update an admin account:
 
 ```powershell
 php artisan intrams:create-user admin@example.com Choose-A-Strong-Password
 ```
 
-7. Start the API from the project root:
+6. Start the API from the project root:
 
 ```powershell
 npm run api
 ```
 
-8. Start Angular in another terminal:
+7. Start Angular in another terminal:
 
 ```powershell
 npm start
