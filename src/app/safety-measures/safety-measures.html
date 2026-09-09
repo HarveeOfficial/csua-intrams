@@ -1,0 +1,78 @@
+<section class="safety-shell">
+  <header class="page-header">
+    <p class="eyebrow">Safety &amp; Emergency</p>
+    <h2>Safety Measures During the Conduct of the Intramurals</h2>
+    <p class="intro">
+      This page provides safety guidelines and emergency procedures to help ensure the safety and well-being of all students, athletes, coaches, officials, and spectators during the conduct of the Intramurals.
+    </p>
+  </header>
+
+  <section class="info-block">
+    <h3>General Safety Measures</h3>
+
+    <div class="guide-grid">
+      @for (group of safetyGuides; track group.title) {
+        <article class="guide-card">
+          <h4>{{ group.title }}</h4>
+          <ul>
+            @for (item of group.items; track item) {
+              <li>{{ item }}</li>
+            }
+          </ul>
+        </article>
+      }
+    </div>
+  </section>
+
+  <section class="info-block emergency-block">
+    <h3>Emergency Procedures</h3>
+
+    <div class="emergency-grid">
+      @for (procedure of emergencyProcedures; track procedure.title) {
+        <article class="procedure-card">
+          <h4>{{ procedure.title }}</h4>
+          <ol>
+            @for (step of procedure.steps; track step) {
+              <li>{{ step }}</li>
+            }
+          </ol>
+        </article>
+      }
+    </div>
+  </section>
+
+  <section class="info-block medical-block">
+    <h3>Nearest Medical Assistance</h3>
+    <div class="medical-grid">
+      @for (item of medicalAssistance; track item.location) {
+        <article class="medical-card">
+          <h4>{{ item.location }}</h4>
+          <p>{{ item.purpose }}</p>
+        </article>
+      }
+    </div>
+  </section>
+
+  <section class="info-block contact-block">
+    <h3>Emergency Contacts</h3>
+    <div class="contact-list">
+      <p class="alert-note">For emergencies, contact the appropriate personnel immediately.</p>
+      <ul>
+        @for (contact of emergencyContacts; track contact.label) {
+          <li>
+            <span class="contact-label">{{ contact.label }}</span>
+            <span class="contact-value">{{ contact.value }}</span>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="info-block reminder-block">
+    <h3>Important Reminder</h3>
+    <p class="reminder-text">
+      <strong>Your safety comes first.</strong>
+      All participants and spectators are encouraged to remain alert, follow safety protocols, and immediately report emergencies or unsafe situations to the designated event personnel.
+    </p>
+  </section>
+</section>

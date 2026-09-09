@@ -1,0 +1,150 @@
+.safety-shell {
+  max-width: 72rem;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  border-top: 4px solid #f59e0b;
+  background: #fff;
+}
+
+.page-header {
+  margin-bottom: 1.5rem;
+}
+
+.eyebrow {
+  margin: 0;
+  color: #b45309;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+h2 {
+  margin: 0.35rem 0 0.5rem;
+  color: #0f172a;
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  line-height: 1.2;
+}
+
+.intro {
+  margin: 0;
+  color: #475569;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.info-block {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.info-block h3 {
+  margin: 0 0 1rem;
+  color: #111827;
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+.guide-grid,
+.emergency-grid,
+.medical-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.guide-card,
+.procedure-card,
+.medical-card,
+.contact-list {
+  padding: 1rem 1.1rem;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  border-radius: 0.75rem;
+}
+
+.guide-card h4,
+.procedure-card h4,
+.medical-card h4 {
+  margin: 0 0 0.8rem;
+  color: #92400e;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.guide-card ul,
+.procedure-card ol {
+  margin: 0;
+  padding-left: 1.1rem;
+  color: #334155;
+  line-height: 1.7;
+}
+
+.procedure-card ol {
+  padding-left: 1.2rem;
+}
+
+.medical-card p {
+  margin: 0;
+  color: #475569;
+  line-height: 1.6;
+}
+
+.alert-note {
+  margin: 0 0 0.8rem;
+  color: #7c2d12;
+  font-weight: 700;
+}
+
+.contact-list ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.contact-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid #e2e8f0;
+  color: #334155;
+}
+
+.contact-label {
+  font-weight: 700;
+}
+
+.contact-value {
+  color: #475569;
+  text-align: right;
+}
+
+.reminder-text {
+  margin: 0;
+  padding: 1rem 1.1rem;
+  border-left: 4px solid #fbbf24;
+  background: #fffbeb;
+  color: #3f3f46;
+  line-height: 1.7;
+  border-radius: 0.5rem;
+}
+
+@media (max-width: 48rem) {
+  .guide-grid,
+  .emergency-grid,
+  .medical-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-list li {
+    display: block;
+  }
+
+  .contact-value {
+    display: block;
+    margin-top: 0.15rem;
+    text-align: left;
+  }
+}

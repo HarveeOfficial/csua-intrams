@@ -39,6 +39,11 @@ export const routes: Routes = [
     loadComponent: () => import('./event-info/event-info').then((m) => m.EventInfo),
   },
   {
+    path: 'safety-measures',
+    loadComponent: () =>
+      import('./safety-measures/safety-measures').then((m) => m.SafetyMeasures),
+  },
+  {
     path: 'login',
     loadComponent: () => import('./login/login').then((m) => m.Login),
   },
