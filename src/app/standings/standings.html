@@ -40,6 +40,33 @@
     <app-medal-standings [colleges]="colleges()" standingType="socio"></app-medal-standings>
   </section>
 
+  <section class="modern-card winners-card">
+    <h1 class="text-3xl font-bold text-center sub-gradient-title">Event Winners</h1>
+    @for (type of ['sports', 'socio']; track type) {
+    @let winnerType = type === 'sports' ? 'sports' : 'socio';
+    <div class="winner-group">
+      <button type="button" class="winner-toggle" (click)="toggleWinners(winnerType)" [attr.aria-expanded]="isWinnersExpanded(winnerType)">
+        <span>{{ winnerType === 'sports' ? 'Sports' : 'Socio' }}</span>
+        <span>{{ isWinnersExpanded(winnerType) ? '−' : '+' }}</span>
+      </button>
+      @if (isWinnersExpanded(winnerType)) {
+      <div class="winner-list">
+        @for (winner of winnersFor(winnerType); track winner.event) {
+        <div class="winner-event">
+          <h2>{{ winner.event }}</h2>
+          @if (winner.gold.length) { <div><strong class="gold-text">Gold</strong> - {{ winner.gold.join(', ') }}</div> }
+          @if (winner.silver.length) { <div><strong class="silver-text">Silver</strong> - {{ winner.silver.join(', ') }}</div> }
+          @if (winner.bronze.length) { <div><strong class="bronze-text">Bronze</strong> - {{ winner.bronze.join(', ') }}</div> }
+        </div>
+        } @empty {
+        <p class="winner-empty">No event winners yet.</p>
+        }
+      </div>
+      }
+    </div>
+    }
+  </section>
+
   <section class="modern-card">
     @if (isOfficial()) {
     <div class="result-status-banner official">
