@@ -286,17 +286,17 @@ export class CollegeDetails {
     if (!selectedValue || !current) return;
 
     if (this.newStandingType() === 'socio') {
-      if (this.form.get(selectedValue)) return;
-      this.form.addControl(selectedValue, this.fb.control(0, { nonNullable: true }));
+      const key = this.uniqueEventKey(selectedValue, current.events);
+      this.form.addControl(key, this.fb.control(0, { nonNullable: true }));
       this.college.set({
         ...current,
-        events: { ...current.events, [selectedValue]: { playerCount: 1, points: 0, standingType: 'socio' } },
+        events: { ...current.events, [key]: { playerCount: 1, points: 0, standingType: 'socio' } },
       });
       this.closeAddEventModal();
       try {
         this.saving.set(true);
         const updated = await firstValueFrom(
-          this.api.updateCollegeStanding(this.collegeId(), selectedValue, null, 1, 0, 'socio')
+          this.api.updateCollegeStanding(this.collegeId(), key, null, 1, 0, 'socio')
         );
         this.college.set(updated as CollegeDoc);
       } catch (e: any) {
@@ -313,18 +313,18 @@ export class CollegeDetails {
       return;
     }
     const key = selected.eventKey;
-    if (this.form.get(key)) return;
+    const uniqueKey = this.uniqueEventKey(key, current.events);
 
     if (this.isTm()) {
-        this.form.addControl(key, this.fb.control(0, { nonNullable: true }));
+        this.form.addControl(uniqueKey, this.fb.control(0, { nonNullable: true }));
         this.college.set({
           ...current,
-          events: { ...current.events, [key]: { playerCount: selected.playerCount, points: 0, sportId: selected.sportId, sportName: selected.sportName } },
+          events: { ...current.events, [uniqueKey]: { playerCount: selected.playerCount, points: 0, sportId: selected.sportId, sportName: selected.sportName } },
         });
         this.closeAddEventModal();
         try {
           this.saving.set(true);
-          const updated = await firstValueFrom(this.api.updateCollegeStanding(this.collegeId(), key, selected.sportId, selected.playerCount, 0));
+          const updated = await firstValueFrom(this.api.updateCollegeStanding(this.collegeId(), uniqueKey, selected.sportId, selected.playerCount, 0));
           this.college.set(updated as CollegeDoc);
         } catch (e: any) {
           this.error.set(e.error?.message || e.message || 'Failed to add standing');
@@ -335,10 +335,10 @@ export class CollegeDetails {
     }
 
     const playerCount = selected.playerCount > 0 ? selected.playerCount : 1;
-    this.form.addControl(key, this.fb.control(0, { nonNullable: true }));
+    this.form.addControl(uniqueKey, this.fb.control(0, { nonNullable: true }));
     this.college.set({
       ...current,
-      events: { ...current.events, [key]: { playerCount, points: 0 } },
+      events: { ...current.events, [uniqueKey]: { playerCount, points: 0 } },
     });
     this.closeAddEventModal();
     await this.save();
@@ -366,6 +366,13 @@ export class CollegeDetails {
 
     options.sort((a, b) => a.eventKey.localeCompare(b.eventKey));
     this.addEventOptions.set(options);
+  }
+
+  private uniqueEventKey(baseKey: string, events: CollegeDoc['events']): string {
+    if (!events[baseKey] && !this.form.get(baseKey)) return baseKey;
+    let suffix = 2;
+    while (events[`${baseKey} #${suffix}`] || this.form.get(`${baseKey} #${suffix}`)) suffix++;
+    return `${baseKey} #${suffix}`;
   }
 
   private composeEventKey(sportName: string, eventName: string, category: string): string {
