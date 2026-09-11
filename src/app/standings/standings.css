@@ -160,6 +160,13 @@
   overflow: hidden;
 }
 
+.winner-group-title {
+  padding: 0.9rem 1rem;
+  font-weight: 700;
+  color: #334155;
+  background: #f8fafc;
+}
+
 .winner-toggle {
   display: flex;
   justify-content: space-between;

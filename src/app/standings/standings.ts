@@ -31,7 +31,6 @@ export class Standings {
   colleges = signal<ICollege[]>([]);
   categoryExpanded = signal<Set<string>>(new Set());
   eventExpanded = signal<Set<string>>(new Set());
-  winnersExpanded = signal<Set<string>>(new Set());
   isOfficial = signal(false);
 
   eventWinners = computed(() => {
@@ -58,17 +57,6 @@ export class Standings {
 
   winnersFor(type: 'sports' | 'socio'): EventWinner[] {
     return this.eventWinners().filter((winner) => winner.standingType === type);
-  }
-
-  toggleWinners(type: 'sports' | 'socio') {
-    const expanded = new Set(this.winnersExpanded());
-    if (expanded.has(type)) expanded.delete(type);
-    else expanded.add(type);
-    this.winnersExpanded.set(expanded);
-  }
-
-  isWinnersExpanded(type: 'sports' | 'socio'): boolean {
-    return this.winnersExpanded().has(type);
   }
 
   ngOnInit(): void {
