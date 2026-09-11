@@ -7,7 +7,7 @@ import { DataApi } from '../../../data-api.service';
 import { AuthApi } from '../../../auth-api.service';
 import {
   MEDAL_POINTS,
-  medalFromEventPoints,
+  medalFromWeightedEventPoints,
   normalizeEventPoints,
   type MedalName,
 } from '../../../scoring';
@@ -112,14 +112,6 @@ export class CollegeDetails {
         this.addEventOptions.set([]);
       },
     });
-    this.api.getSchedule().subscribe({
-      next: (rows) => {
-        this.refreshAddEventOptions(rows || []);
-      },
-      error: () => {
-        this.refreshAddEventOptions([]);
-      },
-    });
     this.api.getCollege(id).subscribe({
         next: (data) => {
           this.college.set(data as CollegeDoc);
@@ -202,7 +194,7 @@ export class CollegeDetails {
   }
 
   currentMedal(points: number, playerCount = 1): Medal {
-    return medalFromEventPoints(points, playerCount);
+    return medalFromWeightedEventPoints(points, playerCount);
   }
 
   async save() {
@@ -351,59 +343,24 @@ export class CollegeDetails {
     await this.save();
   }
 
-  private refreshAddEventOptions(scheduleRows: any[] = []): void {
+  private refreshAddEventOptions(): void {
     const sportList = this.sports();
     if (!sportList.length) {
       this.addEventOptions.set([]);
       return;
     }
 
-    const bySportName = new Map<string, { id: number; name: string; playerCount: number }>();
-    sportList.forEach((sport) => bySportName.set((sport.name || '').trim().toLowerCase(), sport));
-
-    const options: AddEventOption[] = [];
-    const seen = new Set<string>();
-
-    for (const row of scheduleRows || []) {
-      const sportName = String(row?.sport || '').trim();
-      if (!sportName) continue;
-      const sport = bySportName.get(sportName.toLowerCase());
-      if (!sport) continue;
-
-      const eventName = String(row?.event || '').trim();
-      const category = this.normalizeCategory(row?.category);
-      const eventKey = this.composeEventKey(sport.name, eventName, category);
-      const unique = `${sport.id}|${eventKey}`;
-      if (seen.has(unique)) continue;
-      seen.add(unique);
-
+    const options: AddEventOption[] = sportList.map((sport) => {
       const playerCount = sport.playerCount > 0 ? sport.playerCount : 1;
-      options.push({
-        value: unique,
-        eventKey,
+      return {
+        value: String(sport.id),
+        eventKey: sport.name,
         sportId: sport.id,
         sportName: sport.name,
         playerCount,
-        label: `${eventKey} (${playerCount} ${playerCount === 1 ? 'player' : 'players'})`,
-      });
-    }
-
-    if (!options.length) {
-      const fallback = sportList.map((sport) => {
-        const playerCount = sport.playerCount > 0 ? sport.playerCount : 1;
-        const unique = `${sport.id}|${sport.name}`;
-        return {
-          value: unique,
-          eventKey: sport.name,
-          sportId: sport.id,
-          sportName: sport.name,
-          playerCount,
-          label: `${sport.name} (${playerCount} ${playerCount === 1 ? 'player' : 'players'})`,
-        } satisfies AddEventOption;
-      });
-      this.addEventOptions.set(fallback);
-      return;
-    }
+        label: `${sport.name} (${playerCount} ${playerCount === 1 ? 'player' : 'players'})`,
+      } satisfies AddEventOption;
+    });
 
     options.sort((a, b) => a.eventKey.localeCompare(b.eventKey));
     this.addEventOptions.set(options);

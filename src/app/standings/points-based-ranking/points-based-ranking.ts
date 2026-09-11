@@ -1,7 +1,7 @@
 import { Component, computed, input } from '@angular/core';
 import { CountAnimDirective } from '../count-anim.directive';
 import { ICollege } from '../../admin/colleges/colleges';
-import { medalFromEventPoints, normalizeEventPoints } from '../../scoring';
+import { medalFromWeightedEventPoints } from '../../scoring';
 
 @Component({
   selector: 'app-points-based-ranking',
@@ -27,8 +27,8 @@ export class PointsBasedRanking {
           ev && typeof ev.playerCount === 'number' ? ev.playerCount : 1;
         const playerCount = pcRaw > 0 ? pcRaw : 1;
         const p = ev && typeof ev.points === 'number' ? ev.points : 0;
-        const weightedPoints = normalizeEventPoints(p, playerCount);
-        const medal = medalFromEventPoints(weightedPoints, playerCount);
+        const weightedPoints = p;
+        const medal = medalFromWeightedEventPoints(weightedPoints, playerCount);
         if (medal === 'gold') gold += playerCount;
         else if (medal === 'silver') silver += playerCount;
         else if (medal === 'bronze') bronze += playerCount;

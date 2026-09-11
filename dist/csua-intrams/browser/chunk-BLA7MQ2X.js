@@ -1,0 +1,1 @@
+var o={gold:5,silver:3,bronze:1};function i(e,n=1){let r=Number.isFinite(n)&&n>0?n:1;return e===5||e===3||e===1?e*r:e===0?0:e}function u(e,n=1){let r=Number.isFinite(n)&&n>0?n:1;if(e<=0)return"none";let t=e/r;return t===5?"gold":t===3?"silver":t===1?"bronze":"none"}export{o as a,i as b,u as c};

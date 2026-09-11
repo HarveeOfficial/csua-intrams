@@ -4,7 +4,7 @@ import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { DataApi } from '../../data-api.service';
 import { AuthApi } from '../../auth-api.service';
-import { medalFromEventPoints, normalizeEventPoints } from '../../scoring';
+import { medalFromWeightedEventPoints } from '../../scoring';
 
 export interface ICollege {
   name: string;
@@ -54,11 +54,8 @@ export class Colleges {
         typeof ev.playerCount === 'number' && ev.playerCount > 0
           ? ev.playerCount
           : 1;
-      const weightedPoints = normalizeEventPoints(
-        typeof ev.points === 'number' ? ev.points : 0,
-        pc
-      );
-      const medal = medalFromEventPoints(weightedPoints, pc);
+      const weightedPoints = typeof ev.points === 'number' ? ev.points : 0;
+      const medal = medalFromWeightedEventPoints(weightedPoints, pc);
       if (medal === 'gold') gold += pc;
       else if (medal === 'silver') silver += pc;
       else if (medal === 'bronze') bronze += pc;

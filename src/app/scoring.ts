@@ -24,6 +24,11 @@ export function eventPointsForMedal(medalPoints: number, playerCount = 1): numbe
 export function medalFromEventPoints(points: number, playerCount = 1): MedalName {
   const safePlayerCount = Number.isFinite(playerCount) && playerCount > 0 ? playerCount : 1;
   const weightedPoints = normalizeEventPoints(points, safePlayerCount);
+  return medalFromWeightedEventPoints(weightedPoints, safePlayerCount);
+}
+
+export function medalFromWeightedEventPoints(weightedPoints: number, playerCount = 1): MedalName {
+  const safePlayerCount = Number.isFinite(playerCount) && playerCount > 0 ? playerCount : 1;
   if (weightedPoints <= 0) return 'none';
   const normalizedBase = weightedPoints / safePlayerCount;
   if (normalizedBase === 5) return 'gold';

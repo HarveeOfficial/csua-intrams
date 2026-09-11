@@ -2,7 +2,7 @@ import { Component, computed, input, signal } from '@angular/core';
 import { CountAnimDirective } from '../count-anim.directive';
 import { ICollege } from '../../admin/colleges/colleges';
 import { IMedal } from '../standings';
-import { medalFromEventPoints, normalizeEventPoints } from '../../scoring';
+import { medalFromWeightedEventPoints } from '../../scoring';
 
 @Component({
   selector: 'app-medal-standings',
@@ -81,8 +81,8 @@ export class MedalStandings {
           const pcRaw =
             ev && typeof ev.playerCount === 'number' ? ev.playerCount : 1;
           const playerCount = pcRaw > 0 ? pcRaw : 1;
-          const weightedPoints = normalizeEventPoints(ev?.points ?? 0, playerCount);
-          const medal = medalFromEventPoints(weightedPoints, playerCount);
+          const weightedPoints = ev?.points ?? 0;
+          const medal = medalFromWeightedEventPoints(weightedPoints, playerCount);
           if (!map[c.id]) map[c.id] = zeroEntry(c);
           if (medal === 'gold') map[c.id].gold += playerCount;
           else if (medal === 'silver') map[c.id].silver += playerCount;

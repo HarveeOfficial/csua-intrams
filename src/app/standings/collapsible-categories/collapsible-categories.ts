@@ -1,7 +1,7 @@
 import { Component, computed, input, signal } from '@angular/core';
 import { CountAnimDirective } from '../count-anim.directive';
 import { ICollege } from '../../admin/colleges/colleges';
-import { medalFromEventPoints, normalizeEventPoints } from '../../scoring';
+import { medalFromWeightedEventPoints } from '../../scoring';
 
 @Component({
   selector: 'app-collapsible-categories',
@@ -23,13 +23,13 @@ export class CollapsibleCategories {
             ev && typeof ev.playerCount === 'number' && ev.playerCount > 0
               ? ev.playerCount
               : 1;
-          const points = normalizeEventPoints((ev && ev.points) || 0, playerCount);
+          const points = (ev && ev.points) || 0;
           if (points <= 0) return;
           const category = this.deriveCategory(eventKey);
           const groupKey = category.replace(/\s+/g, ' ').trim().toLowerCase();
           if (!map[groupKey]) map[groupKey] = {};
           if (!map[groupKey][eventKey]) map[groupKey][eventKey] = [];
-          const medal = medalFromEventPoints(points, playerCount);
+          const medal = medalFromWeightedEventPoints(points, playerCount);
           map[groupKey][eventKey].push({
             event: eventKey,
             college: c.name,
