@@ -42,7 +42,8 @@ export class Standings {
         const playerCount = value?.playerCount > 0 ? value.playerCount : 1;
         const medal = medalFromWeightedEventPoints(value?.points ?? 0, playerCount);
         if (medal === 'none') return;
-        const key = `${standingType}|${event}`;
+        const baseEvent = event.replace(/ #\d+$/, '');
+        const key = `${standingType}|${baseEvent}`;
         if (!winners.has(key)) winners.set(key, { gold: [], silver: [], bronze: [] });
         winners.get(key)![medal].push(college.name);
       });
