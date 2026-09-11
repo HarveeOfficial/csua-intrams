@@ -33,6 +33,7 @@ interface AddEventOption {
   sportId: number;
   sportName: string;
   playerCount: number;
+  category: 'Men' | 'Women';
   label: string;
   standingType?: 'sports' | 'socio';
 }
@@ -350,16 +351,17 @@ export class CollegeDetails {
       return;
     }
 
-    const options: AddEventOption[] = sportList.map((sport) => {
+    const options: AddEventOption[] = sportList.flatMap((sport) => {
       const playerCount = sport.playerCount > 0 ? sport.playerCount : 1;
-      return {
-        value: String(sport.id),
-        eventKey: sport.name,
+      return (['Men', 'Women'] as const).map((category) => ({
+        value: `${sport.id}|${category}`,
+        eventKey: `${sport.name} - ${category}`,
         sportId: sport.id,
         sportName: sport.name,
         playerCount,
-        label: `${sport.name} (${playerCount} ${playerCount === 1 ? 'player' : 'players'})`,
-      } satisfies AddEventOption;
+        category,
+        label: `${sport.name} - ${category} (${playerCount} ${playerCount === 1 ? 'player' : 'players'})`,
+      } satisfies AddEventOption));
     });
 
     options.sort((a, b) => a.eventKey.localeCompare(b.eventKey));
