@@ -80,6 +80,23 @@ export interface IOverallChampions {
   socio: IOverallChampion;
 }
 
+export interface IPollOption {
+  id: number;
+  text: string;
+  imageUrl: string | null;
+  voteCount: number;
+}
+
+export interface IPoll {
+  id: number;
+  title: string;
+  description: string | null;
+  active: boolean;
+  totalVotes: number;
+  createdAt: number;
+  options: IPollOption[];
+}
+
 export interface ISiteAnalytics {
   totalVisits: number;
   avgTimeSpentMinutes: number;
@@ -268,5 +285,42 @@ export class DataApi {
 
   submitSiteRating(rating: number): Observable<{ rating: number; average: number; count: number }> {
     return this.http.post<{ rating: number; average: number; count: number }>(`${this.baseUrl}/site-ratings`, { rating });
+  }
+
+  getPolls(all = false): Observable<IPoll[]> {
+    return this.http.get<IPoll[]>(`${this.baseUrl}/polls${all ? '?all=1' : ''}`);
+  }
+
+  getPoll(id: number): Observable<IPoll> {
+    return this.http.get<IPoll>(`${this.baseUrl}/polls/${id}`);
+  }
+
+  createPoll(title: string, description: string): Observable<IPoll> {
+    return this.http.post<IPoll>(`${this.baseUrl}/polls`, { title, description });
+  }
+
+  updatePoll(id: number, data: { title?: string; description?: string; active?: boolean }): Observable<IPoll> {
+    return this.http.patch<IPoll>(`${this.baseUrl}/polls/${id}`, data);
+  }
+
+  deletePoll(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/polls/${id}`);
+  }
+
+  addPollOption(pollId: number, text: string, image: File | null): Observable<IPollOption> {
+    const body = new FormData();
+    body.append('text', text);
+    if (image) {
+      body.append('image', image);
+    }
+    return this.http.post<IPollOption>(`${this.baseUrl}/polls/${pollId}/options`, body);
+  }
+
+  deletePollOption(pollId: number, optionId: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/polls/${pollId}/options/${optionId}`);
+  }
+
+  votePoll(pollId: number, optionId: number, voterId: string): Observable<IPoll> {
+    return this.http.post<IPoll>(`${this.baseUrl}/polls/${pollId}/vote`, { option_id: optionId, voter_id: voterId });
   }
 }

@@ -35,6 +35,10 @@ export const routes: Routes = [
     loadComponent: () => import('./downloadable-files/downloadable-files').then((m) => m.DownloadableFiles),
   },
   {
+    path: 'polls',
+    loadComponent: () => import('./polls/polls').then((m) => m.Polls),
+  },
+  {
     path: 'event-info',
     loadComponent: () => import('./event-info/event-info').then((m) => m.EventInfo),
   },

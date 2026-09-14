@@ -55,6 +55,11 @@ export const routes: Routes = [
     loadComponent: () => import('./downloadable-files/downloadable-files').then((m) => m.DownloadableFiles),
   },
   {
+    path: 'polls',
+    canActivate: [adminGuard],
+    loadComponent: () => import('./polls/polls').then((m) => m.Polls),
+  },
+  {
     path: 'analytics',
     canActivate: [adminGuard],
     loadComponent: () => import('./analytics/analytics').then((m) => m.Analytics),

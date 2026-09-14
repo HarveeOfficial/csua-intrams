@@ -1,0 +1,220 @@
+.polls-admin-shell {
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #1e293b;
+}
+
+header p {
+  margin: 0.25rem 0 0;
+  color: #64748b;
+}
+
+.error-box {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  background: #fee2e2;
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+.create-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: flex-end;
+  margin-top: 1.25rem;
+  padding: 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+
+.create-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #334155;
+  flex: 1 1 14rem;
+}
+
+.create-form input {
+  padding: 0.5rem 0.65rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+}
+
+.optional {
+  font-weight: 400;
+  color: #94a3b8;
+}
+
+.create-form button {
+  padding: 0.55rem 1.1rem;
+  border-radius: 6px;
+  background: #f59e0b;
+  color: #fff;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+}
+
+.create-form button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.status {
+  margin-top: 1.25rem;
+  color: #64748b;
+}
+
+.poll-list {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.poll-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.poll-card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.poll-card-header h3 {
+  margin: 0;
+  color: #1e293b;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.description {
+  margin: 0.25rem 0 0;
+  color: #64748b;
+  font-size: 0.85rem;
+}
+
+.poll-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.poll-actions button {
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.delete-button {
+  color: #b91c1c;
+  border-color: #fecaca !important;
+}
+
+.status-pill {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: #e2e8f0;
+  color: #64748b;
+}
+
+.status-pill.active {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.option-list {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 0.9rem;
+}
+
+.option-row {
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+.option-row img,
+.no-image {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.no-image {
+  display: grid;
+  place-items: center;
+  background: #e2e8f0;
+  color: #94a3b8;
+  font-size: 0.6rem;
+  text-align: center;
+}
+
+.option-text {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.option-votes {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.add-option-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 0.9rem;
+  padding-top: 0.9rem;
+  border-top: 1px dashed #e2e8f0;
+}
+
+.add-option-panel input[type='text'] {
+  flex: 1 1 10rem;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+}
+
+.add-option-panel button {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  background: #1e293b;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.add-option-panel button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
