@@ -62,6 +62,24 @@ export interface IOfficialResult {
   certifiedAt: string | null;
 }
 
+export interface IOverallChampionCollege {
+  id: string;
+  name: string;
+  color: string;
+  photo_url?: string | null;
+}
+
+export interface IOverallChampion {
+  champion: IOverallChampionCollege | null;
+  firstRunnerUp: IOverallChampionCollege | null;
+  secondRunnerUp: IOverallChampionCollege | null;
+}
+
+export interface IOverallChampions {
+  sports: IOverallChampion;
+  socio: IOverallChampion;
+}
+
 export interface ISiteAnalytics {
   totalVisits: number;
   avgTimeSpentMinutes: number;
@@ -205,6 +223,19 @@ export class DataApi {
 
   updateOfficialResult(isOfficial: boolean): Observable<IOfficialResult> {
     return this.http.patch<IOfficialResult>(`${this.baseUrl}/official-result`, { is_official: isOfficial });
+  }
+
+  getOverallChampion(): Observable<IOverallChampions> {
+    return this.http.get<IOverallChampions>(`${this.baseUrl}/overall-champion`);
+  }
+
+  updateOverallChampion(standingType: 'sports' | 'socio', championId: string | null, firstRunnerUpId: string | null, secondRunnerUpId: string | null): Observable<IOverallChampion> {
+    return this.http.patch<IOverallChampion>(`${this.baseUrl}/overall-champion`, {
+      standing_type: standingType,
+      champion_college_code: championId,
+      first_runner_up_college_code: firstRunnerUpId,
+      second_runner_up_college_code: secondRunnerUpId,
+    });
   }
 
   getSiteAnalytics(): Observable<ISiteAnalytics> {

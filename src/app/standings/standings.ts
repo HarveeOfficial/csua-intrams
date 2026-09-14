@@ -1,7 +1,8 @@
 import { Component, computed, inject, signal } from '@angular/core';
+import { NgIf } from '@angular/common';
 import { ICollege } from '../admin/colleges/colleges';
 import { Observable } from 'rxjs';
-import { DataApi } from '../data-api.service';
+import { DataApi, IOverallChampion, IOverallChampions } from '../data-api.service';
 import { MedalStandings } from './medal-standings/medal-standings';
 import { PointsBasedRanking } from './points-based-ranking/points-based-ranking';
 import { medalFromWeightedEventPoints } from '../scoring';
@@ -21,7 +22,7 @@ interface EventWinner {
 }
 @Component({
   selector: 'app-standings',
-  imports: [MedalStandings, PointsBasedRanking],
+  imports: [NgIf, MedalStandings, PointsBasedRanking],
   templateUrl: './standings.html',
   styleUrl: './standings.css',
 })
@@ -32,6 +33,7 @@ export class Standings {
   categoryExpanded = signal<Set<string>>(new Set());
   eventExpanded = signal<Set<string>>(new Set());
   isOfficial = signal(false);
+  overallChampions = signal<IOverallChampions | null>(null);
 
   eventWinners = computed(() => {
     const winners = new Map<string, { gold: string[]; silver: string[]; bronze: string[] }>();
@@ -63,6 +65,11 @@ export class Standings {
   ngOnInit(): void {
     this.getColleges().subscribe((colleges) => this.colleges.set(colleges));
     this.api.getOfficialResult().subscribe((result) => this.isOfficial.set(result.isOfficial));
+    this.api.getOverallChampion().subscribe((result) => this.overallChampions.set(result));
+  }
+
+  overallChampionFor(type: 'sports' | 'socio'): IOverallChampion | null {
+    return this.overallChampions()?.[type] ?? null;
   }
 
   getColleges(): Observable<ICollege[]> {

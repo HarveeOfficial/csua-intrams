@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\CollegeController;
 use App\Http\Controllers\Api\DownloadableFileController;
 use App\Http\Controllers\Api\EventDefinitionController;
 use App\Http\Controllers\Api\OfficialResultController;
+use App\Http\Controllers\Api\OverallChampionController;
 use App\Http\Controllers\Api\ScheduleController;
 use App\Http\Controllers\Api\SiteAnalyticsController;
 use App\Http\Controllers\Api\SportController;
@@ -24,6 +25,7 @@ Route::get('/events', [EventDefinitionController::class, 'index']);
 Route::get('/downloadable-files', [DownloadableFileController::class, 'index']);
 Route::get('/downloadable-files/{filename}/download', [DownloadableFileController::class, 'download']);
 Route::get('/official-result', [OfficialResultController::class, 'show']);
+Route::get('/overall-champion', [OverallChampionController::class, 'show']);
 Route::get('/site-analytics', [SiteAnalyticsController::class, 'index']);
 Route::post('/site-visits', [SiteAnalyticsController::class, 'recordVisit']);
 Route::post('/site-time', [SiteAnalyticsController::class, 'recordTimeSpent']);
@@ -53,6 +55,7 @@ Route::middleware('auth:sanctum')->group(function (): void {
         Route::patch('/colleges/{college:code}', [CollegeController::class, 'updateEvents']);
 
         Route::patch('/official-result', [OfficialResultController::class, 'update']);
+        Route::patch('/overall-champion', [OverallChampionController::class, 'update']);
 
         Route::post('/sports', [SportController::class, 'store']);
         Route::post('/users', [UserController::class, 'store']);

@@ -32,6 +32,69 @@
   color: #065f46;
 }
 
+/* Overall champion podium */
+.champion-podium {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+}
+.champion-section {
+  padding: 1.5rem;
+}
+.podium-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem 1.5rem;
+  border-radius: 1rem;
+  background: #ffffffcc;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  min-width: 140px;
+  flex: 1 1 180px;
+  max-width: 220px;
+}
+.podium-first {
+  order: 2;
+  box-shadow: 0 10px 25px -8px rgba(234, 179, 8, 0.45);
+  border-color: #fde68a;
+}
+.podium-second {
+  order: 1;
+  box-shadow: 0 8px 20px -8px rgba(148, 163, 184, 0.45);
+}
+.podium-third {
+  order: 3;
+  box-shadow: 0 8px 20px -8px rgba(217, 119, 6, 0.35);
+}
+.podium-medal {
+  font-size: 2rem;
+  line-height: 1;
+}
+.podium-photo {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 9999px;
+  object-fit: cover;
+  margin-top: 0.5rem;
+  box-shadow: 0 0 0 3px #ffffff, 0 0 0 4px rgba(148, 163, 184, 0.3);
+}
+.podium-name {
+  margin-top: 0.6rem;
+  font-weight: 700;
+  text-align: center;
+}
+.podium-label {
+  margin-top: 0.15rem;
+  font-size: 0.75rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
 
 /* Logo marquee */
 .logo-marquee {

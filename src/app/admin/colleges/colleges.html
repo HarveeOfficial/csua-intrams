@@ -3,6 +3,102 @@
   <a *ngIf="isAdmin()" routerLink="/admin/colleges/new" class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-indigo-700">+ New college</a>
 </div>
 
+@if (isAdmin()) {
+<div class="rounded-2xl border border-gray-200 bg-white p-5 mb-6 shadow-sm">
+  <h3 class="text-lg font-bold text-gray-800 mb-1">🏆 Overall Champion (Sports)</h3>
+  <p class="text-sm text-slate-500 mb-4">Select the overall champion, 1st runner-up, and 2nd runner-up to display on the Sports standings page.</p>
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div>
+      <label class="block text-xs font-semibold text-gray-600 mb-1">🥇 Overall Champion</label>
+      <select [(ngModel)]="championId" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+        <option [ngValue]="null">— None —</option>
+        @for (c of colleges(); track c.id) {
+        <option [ngValue]="c.id">{{ c.name }}</option>
+        }
+      </select>
+    </div>
+    <div>
+      <label class="block text-xs font-semibold text-gray-600 mb-1">🥈 1st Runner-up</label>
+      <select [(ngModel)]="firstRunnerUpId" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+        <option [ngValue]="null">— None —</option>
+        @for (c of colleges(); track c.id) {
+        <option [ngValue]="c.id">{{ c.name }}</option>
+        }
+      </select>
+    </div>
+    <div>
+      <label class="block text-xs font-semibold text-gray-600 mb-1">🥉 2nd Runner-up</label>
+      <select [(ngModel)]="secondRunnerUpId" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+        <option [ngValue]="null">— None —</option>
+        @for (c of colleges(); track c.id) {
+        <option [ngValue]="c.id">{{ c.name }}</option>
+        }
+      </select>
+    </div>
+  </div>
+  <div class="flex items-center gap-3 mt-4">
+    <button
+      type="button"
+      (click)="saveOverallChampion()"
+      [disabled]="savingOverallChampion()"
+      class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-indigo-700 disabled:opacity-60"
+    >
+      {{ savingOverallChampion() ? 'Saving...' : 'Save' }}
+    </button>
+    @if (overallChampionSaved()) {
+    <span class="text-sm text-emerald-600 font-medium">Saved!</span>
+    }
+  </div>
+</div>
+
+<div class="rounded-2xl border border-gray-200 bg-white p-5 mb-6 shadow-sm">
+  <h3 class="text-lg font-bold text-gray-800 mb-1">🏆 Overall Champion (Socio)</h3>
+  <p class="text-sm text-slate-500 mb-4">Select the overall champion, 1st runner-up, and 2nd runner-up to display on the Socio standings page.</p>
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div>
+      <label class="block text-xs font-semibold text-gray-600 mb-1">🥇 Overall Champion</label>
+      <select [(ngModel)]="socioChampionId" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+        <option [ngValue]="null">— None —</option>
+        @for (c of colleges(); track c.id) {
+        <option [ngValue]="c.id">{{ c.name }}</option>
+        }
+      </select>
+    </div>
+    <div>
+      <label class="block text-xs font-semibold text-gray-600 mb-1">🥈 1st Runner-up</label>
+      <select [(ngModel)]="socioFirstRunnerUpId" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+        <option [ngValue]="null">— None —</option>
+        @for (c of colleges(); track c.id) {
+        <option [ngValue]="c.id">{{ c.name }}</option>
+        }
+      </select>
+    </div>
+    <div>
+      <label class="block text-xs font-semibold text-gray-600 mb-1">🥉 2nd Runner-up</label>
+      <select [(ngModel)]="socioSecondRunnerUpId" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+        <option [ngValue]="null">— None —</option>
+        @for (c of colleges(); track c.id) {
+        <option [ngValue]="c.id">{{ c.name }}</option>
+        }
+      </select>
+    </div>
+  </div>
+  <div class="flex items-center gap-3 mt-4">
+    <button
+      type="button"
+      (click)="saveSocioChampion()"
+      [disabled]="savingSocioChampion()"
+      class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-indigo-700 disabled:opacity-60"
+    >
+      {{ savingSocioChampion() ? 'Saving...' : 'Save' }}
+    </button>
+    @if (socioChampionSaved()) {
+    <span class="text-sm text-emerald-600 font-medium">Saved!</span>
+    }
+  </div>
+</div>
+}
+
 @if (!(colleges().length)) {
 <div class="text-gray-400 italic text-lg animate-pulse">
   Loading or no colleges yet...

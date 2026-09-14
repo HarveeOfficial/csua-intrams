@@ -19,6 +19,44 @@
     </div>
   </div> -->
 
+  <section class="modern-card champion-section" *ngIf="overallChampionFor('sports') as champ">
+    @if (champ.champion || champ.firstRunnerUp || champ.secondRunnerUp) {
+    <h1 class="text-3xl font-bold text-center sub-gradient-title">🏆 Overall Champion (Sports)</h1>
+    <div class="champion-podium">
+      @if (champ.firstRunnerUp) {
+      <div class="podium-item podium-second">
+        <div class="podium-medal">🥈</div>
+        @if (champ.firstRunnerUp.photo_url) {
+        <img [src]="champ.firstRunnerUp.photo_url" [alt]="champ.firstRunnerUp.name" class="podium-photo" />
+        }
+        <div class="podium-name">{{ champ.firstRunnerUp.name }}</div>
+        <div class="podium-label">1st Runner-up</div>
+      </div>
+      }
+      @if (champ.champion) {
+      <div class="podium-item podium-first">
+        <div class="podium-medal">🥇</div>
+        @if (champ.champion.photo_url) {
+        <img [src]="champ.champion.photo_url" [alt]="champ.champion.name" class="podium-photo" />
+        }
+        <div class="podium-name">{{ champ.champion.name }}</div>
+        <div class="podium-label">Overall Champion</div>
+      </div>
+      }
+      @if (champ.secondRunnerUp) {
+      <div class="podium-item podium-third">
+        <div class="podium-medal">🥉</div>
+        @if (champ.secondRunnerUp.photo_url) {
+        <img [src]="champ.secondRunnerUp.photo_url" [alt]="champ.secondRunnerUp.name" class="podium-photo" />
+        }
+        <div class="podium-name">{{ champ.secondRunnerUp.name }}</div>
+        <div class="podium-label">2nd Runner-up</div>
+      </div>
+      }
+    </div>
+    }
+  </section>
+
   <section class="modern-card">
     <h1 class="text-3xl font-bold text-center sub-gradient-title">Sports Standing</h1>
 
@@ -31,6 +69,44 @@
     <app-medal-standings [colleges]="colleges()" standingType="sports"></app-medal-standings>
   </section>
 
+  <section class="modern-card champion-section" *ngIf="overallChampionFor('socio') as champ">
+    @if (champ.champion || champ.firstRunnerUp || champ.secondRunnerUp) {
+    <h1 class="text-3xl font-bold text-center sub-gradient-title">🏆 Overall Champion (Socio)</h1>
+    <div class="champion-podium">
+      @if (champ.firstRunnerUp) {
+      <div class="podium-item podium-second">
+        <div class="podium-medal">🥈</div>
+        @if (champ.firstRunnerUp.photo_url) {
+        <img [src]="champ.firstRunnerUp.photo_url" [alt]="champ.firstRunnerUp.name" class="podium-photo" />
+        }
+        <div class="podium-name">{{ champ.firstRunnerUp.name }}</div>
+        <div class="podium-label">1st Runner-up</div>
+      </div>
+      }
+      @if (champ.champion) {
+      <div class="podium-item podium-first">
+        <div class="podium-medal">🥇</div>
+        @if (champ.champion.photo_url) {
+        <img [src]="champ.champion.photo_url" [alt]="champ.champion.name" class="podium-photo" />
+        }
+        <div class="podium-name">{{ champ.champion.name }}</div>
+        <div class="podium-label">Overall Champion</div>
+      </div>
+      }
+      @if (champ.secondRunnerUp) {
+      <div class="podium-item podium-third">
+        <div class="podium-medal">🥉</div>
+        @if (champ.secondRunnerUp.photo_url) {
+        <img [src]="champ.secondRunnerUp.photo_url" [alt]="champ.secondRunnerUp.name" class="podium-photo" />
+        }
+        <div class="podium-name">{{ champ.secondRunnerUp.name }}</div>
+        <div class="podium-label">2nd Runner-up</div>
+      </div>
+      }
+    </div>
+    }
+  </section>
+
   <section class="modern-card">
     <h1 class="text-3xl font-bold text-center sub-gradient-title">Socio Standing</h1>
     <app-points-based-ranking
@@ -39,6 +115,7 @@
     ></app-points-based-ranking>
     <app-medal-standings [colleges]="colleges()" standingType="socio"></app-medal-standings>
   </section>
+
 
   <section class="modern-card winners-card">
     <h1 class="text-3xl font-bold text-center sub-gradient-title">Event Winners</h1>
