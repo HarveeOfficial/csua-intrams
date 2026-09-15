@@ -4,6 +4,7 @@ import { DataApi, IPoll } from '../data-api.service';
 
 const VOTER_ID_KEY = 'csua-intrams-voter-id';
 const VOTED_POLLS_KEY = 'csua-intrams-voted-polls';
+const VOTE_SELECTIONS_KEY = 'csua-intrams-vote-selections';
 
 @Component({
   selector: 'app-polls',
@@ -37,13 +38,26 @@ export class Polls {
     return this.votedPollIds().includes(pollId);
   }
 
+  selectedOptionId(pollId: number): number | null {
+    const selections = this.voteSelections();
+    const saved = selections[String(pollId)];
+    return saved ?? null;
+  }
+
   percentage(voteCount: number, totalVotes: number): number {
     if (!totalVotes) return 0;
     return Math.round((voteCount / totalVotes) * 100);
   }
 
   vote(poll: IPoll, optionId: number): void {
-    if (this.hasVoted(poll.id) || this.votingPollId()) return;
+    if (this.votingPollId()) return;
+
+    if (this.hasVoted(poll.id)) {
+      if (this.selectedOptionId(poll.id) === optionId) {
+        this.removeVote(poll);
+      }
+      return;
+    }
 
     this.votingPollId.set(poll.id);
     this.voteError.set(null);
@@ -51,14 +65,31 @@ export class Polls {
     this.api.votePoll(poll.id, optionId, this.getVoterId()).subscribe({
       next: (updated) => {
         this.polls.update((polls) => polls.map((p) => (p.id === updated.id ? updated : p)));
-        this.markVoted(poll.id);
+        this.markVoted(poll.id, optionId);
         this.votingPollId.set(null);
       },
       error: (err) => {
         this.voteError.set(err?.error?.message || 'Unable to submit your vote.');
         if (err?.status === 422) {
-          this.markVoted(poll.id);
+          this.markVoted(poll.id, optionId);
         }
+        this.votingPollId.set(null);
+      },
+    });
+  }
+
+  private removeVote(poll: IPoll): void {
+    this.votingPollId.set(poll.id);
+    this.voteError.set(null);
+
+    this.api.removeVotePoll(poll.id, this.getVoterId()).subscribe({
+      next: (updated) => {
+        this.polls.update((polls) => polls.map((p) => (p.id === updated.id ? updated : p)));
+        this.clearVote(poll.id);
+        this.votingPollId.set(null);
+      },
+      error: (err) => {
+        this.voteError.set(err?.error?.message || 'Unable to remove your vote.');
         this.votingPollId.set(null);
       },
     });
@@ -72,10 +103,32 @@ export class Polls {
     }
   }
 
-  private markVoted(pollId: number): void {
+  private voteSelections(): Record<string, number> {
+    try {
+      return JSON.parse(localStorage.getItem(VOTE_SELECTIONS_KEY) || '{}');
+    } catch {
+      return {};
+    }
+  }
+
+  private markVoted(pollId: number, optionId: number): void {
     const ids = new Set(this.votedPollIds());
     ids.add(pollId);
     localStorage.setItem(VOTED_POLLS_KEY, JSON.stringify([...ids]));
+
+    const selections = this.voteSelections();
+    selections[String(pollId)] = optionId;
+    localStorage.setItem(VOTE_SELECTIONS_KEY, JSON.stringify(selections));
+  }
+
+  private clearVote(pollId: number): void {
+    const ids = new Set(this.votedPollIds());
+    ids.delete(pollId);
+    localStorage.setItem(VOTED_POLLS_KEY, JSON.stringify([...ids]));
+
+    const selections = this.voteSelections();
+    delete selections[String(pollId)];
+    localStorage.setItem(VOTE_SELECTIONS_KEY, JSON.stringify(selections));
   }
 
   private getVoterId(): string {

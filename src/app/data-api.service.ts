@@ -323,4 +323,8 @@ export class DataApi {
   votePoll(pollId: number, optionId: number, voterId: string): Observable<IPoll> {
     return this.http.post<IPoll>(`${this.baseUrl}/polls/${pollId}/vote`, { option_id: optionId, voter_id: voterId });
   }
+
+  removeVotePoll(pollId: number, voterId: string): Observable<IPoll> {
+    return this.http.delete<IPoll>(`${this.baseUrl}/polls/${pollId}/vote`, { body: { voter_id: voterId } });
+  }
 }

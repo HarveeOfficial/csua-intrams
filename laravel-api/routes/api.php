@@ -30,6 +30,7 @@ Route::get('/overall-champion', [OverallChampionController::class, 'show']);
 Route::get('/polls', [PollController::class, 'index']);
 Route::get('/polls/{poll}', [PollController::class, 'show']);
 Route::post('/polls/{poll}/vote', [PollController::class, 'vote'])->middleware('throttle:30,1');
+Route::delete('/polls/{poll}/vote', [PollController::class, 'removeVote']);
 Route::get('/site-analytics', [SiteAnalyticsController::class, 'index']);
 Route::post('/site-visits', [SiteAnalyticsController::class, 'recordVisit']);
 Route::post('/site-time', [SiteAnalyticsController::class, 'recordTimeSpent']);

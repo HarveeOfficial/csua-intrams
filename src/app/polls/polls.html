@@ -30,7 +30,8 @@
                 type="button"
                 class="option-card"
                 [class.voted]="hasVoted(poll.id)"
-                [disabled]="hasVoted(poll.id) || votingPollId() === poll.id"
+                [class.selected]="selectedOptionId(poll.id) === option.id"
+                [disabled]="(hasVoted(poll.id) && selectedOptionId(poll.id) !== option.id) || votingPollId() === poll.id"
                 (click)="vote(poll, option.id)"
               >
                 @if (option.imageUrl) {

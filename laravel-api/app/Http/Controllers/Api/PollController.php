@@ -155,6 +155,36 @@ class PollController extends Controller
         return response()->json($this->present($poll, $request));
     }
 
+    public function removeVote(Request $request, Poll $poll): JsonResponse
+    {
+        $data = $request->validate([
+            'voter_id' => ['required', 'string', 'max:100'],
+        ]);
+
+        $vote = PollVote::query()
+            ->where('poll_id', $poll->id)
+            ->where('voter_identifier', $data['voter_id'])
+            ->first();
+
+        if (! $vote) {
+            throw ValidationException::withMessages(['voter_id' => 'You have not voted on this poll yet.']);
+        }
+
+        DB::transaction(function () use ($poll, $vote): void {
+            $option = $poll->options()->whereKey($vote->poll_option_id)->first();
+
+            $vote->delete();
+
+            if ($option) {
+                $option->decrement('vote_count');
+            }
+        });
+
+        $poll->load('options');
+
+        return response()->json($this->present($poll, $request));
+    }
+
     private function present(Poll $poll, Request $request): array
     {
         $totalVotes = $poll->options->sum('vote_count');
@@ -176,7 +206,7 @@ class PollController extends Controller
             'id' => $option->id,
             'text' => $option->text,
             'imageUrl' => $option->image_path
-                ? $request->getSchemeAndHttpHost().'/storage/'.$option->image_path
+                ? Storage::disk('public')->url($option->image_path)
                 : null,
             'voteCount' => $option->vote_count,
         ];
