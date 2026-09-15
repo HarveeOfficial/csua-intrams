@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Response;
 
 class PollController extends Controller
 {
@@ -185,7 +186,7 @@ class PollController extends Controller
         return response()->json($this->present($poll, $request));
     }
 
-    public function showOptionImage(Poll $poll, PollOption $option): \Illuminate\Http\Response
+    public function showOptionImage(Poll $poll, PollOption $option): Response
     {
         if ($option->poll_id !== $poll->id) {
             abort(404);
