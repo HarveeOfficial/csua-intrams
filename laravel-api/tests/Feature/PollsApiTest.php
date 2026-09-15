@@ -63,6 +63,6 @@ class PollsApiTest extends TestCase
             'HTTP_HOST' => 'api.intrams.csuaparri.net',
         ])->getJson('/api/polls');
 
-        $response->assertOk()->assertJsonPath('0.options.0.imageUrl', 'https://api.intrams.csuaparri.net/storage/poll-options/shirt-design.jpg');
+        $response->assertOk()->assertJsonPath('0.options.0.imageUrl', 'https://api.intrams.csuaparri.net/api/polls/'.$poll->id.'/options/'.$poll->options()->first()->id.'/image');
     }
 }
