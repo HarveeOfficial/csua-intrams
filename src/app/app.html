@@ -253,6 +253,17 @@
   <router-outlet></router-outlet>
 </main>
 
+@if (selectedZoomImage(); as zoomedImage) {
+  <div class="image-zoom-backdrop" (click)="closeImageZoom()">
+    <div class="image-zoom-panel" role="dialog" aria-modal="true" aria-label="Zoomed image preview" (click)="$event.stopPropagation()">
+      <button type="button" class="image-zoom-close" aria-label="Close image preview" (click)="closeImageZoom()">
+        ×
+      </button>
+      <img class="image-zoom-image" [src]="zoomedImage.src" [alt]="zoomedImage.alt" />
+    </div>
+  </div>
+}
+
 <footer class="site-footer">
   <div class="footer-inner">
     <p class="footer-copyright">&copy; 2026 CSUA Intramurals. All rights reserved.</p>

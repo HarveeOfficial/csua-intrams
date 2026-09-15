@@ -1,7 +1,33 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { AuthApi, UserSession } from './auth-api.service';
 import { DataApi } from './data-api.service';
+
+export interface ImageZoomTarget {
+  src: string;
+  alt: string;
+}
+
+export function resolveImageZoomTarget(image: HTMLImageElement | null): ImageZoomTarget | null {
+  if (!(image instanceof HTMLImageElement)) {
+    return null;
+  }
+
+  if (image.closest('button')) {
+    return null;
+  }
+
+  const src = (image.currentSrc || image.src || '').trim();
+
+  if (!src || src === 'about:blank') {
+    return null;
+  }
+
+  return {
+    src,
+    alt: image.alt?.trim() || 'Zoomed image',
+  };
+}
 
 @Component({
   selector: 'app-root',
@@ -9,7 +35,7 @@ import { DataApi } from './data-api.service';
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
-export class App implements OnInit {
+export class App implements OnInit, OnDestroy {
   auth = inject(AuthApi);
   dataApi = inject(DataApi);
   router = inject(Router);
@@ -20,6 +46,7 @@ export class App implements OnInit {
   currentUser = signal<UserSession | null>(null);
   rating = signal(this.readStoredRating());
   isRatingModalOpen = signal(false);
+  selectedZoomImage = signal<ImageZoomTarget | null>(null);
   starValues = Array.from({ length: 5 }, (_, index) => index + 1);
   private readonly sessionStartedAt = Date.now();
   private readonly recordSessionTime = (): void => {
@@ -28,12 +55,48 @@ export class App implements OnInit {
     }
   };
 
+  private readonly handleImageClick = (event: Event): void => {
+    const target = event.target;
+
+    if (!(target instanceof HTMLElement)) {
+      return;
+    }
+
+    const image = target.closest('img');
+    if (!image) {
+      return;
+    }
+
+    if (image.closest('.image-zoom-backdrop, .image-zoom-panel')) {
+      return;
+    }
+
+    const zoomTarget = resolveImageZoomTarget(image as HTMLImageElement);
+    if (zoomTarget) {
+      this.selectedZoomImage.set(zoomTarget);
+    }
+  };
+
+  private readonly handleEscapeKey = (event: KeyboardEvent): void => {
+    if (event.key === 'Escape') {
+      this.closeImageZoom();
+    }
+  };
+
   ngOnInit(): void {
     this.currentUser = this.auth.currentUser;
+    document.addEventListener('click', this.handleImageClick);
+    document.addEventListener('keydown', this.handleEscapeKey);
+
     if (!this.router.url.startsWith('/admin')) {
       this.dataApi.recordSiteVisit().subscribe();
       window.addEventListener('pagehide', this.recordSessionTime, { once: true });
     }
+  }
+
+  ngOnDestroy(): void {
+    document.removeEventListener('click', this.handleImageClick);
+    document.removeEventListener('keydown', this.handleEscapeKey);
   }
 
   isAdminRoute() {
@@ -70,6 +133,14 @@ export class App implements OnInit {
         this.closeRatingModal();
       },
     });
+  }
+
+  openImageZoom(image: ImageZoomTarget): void {
+    this.selectedZoomImage.set(image);
+  }
+
+  closeImageZoom(): void {
+    this.selectedZoomImage.set(null);
   }
 
   isStarFilled(star: number): boolean {

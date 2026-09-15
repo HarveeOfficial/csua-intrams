@@ -79,17 +79,12 @@ h2 {
   border: 2px solid #e2e8f0;
   border-radius: 10px;
   background: #f8fafc;
-  cursor: pointer;
   transition: border-color 0.2s ease, transform 0.15s ease;
 }
 
-.option-card:hover:not(:disabled) {
+.option-card:hover {
   border-color: #f59e0b;
   transform: translateY(-2px);
-}
-
-.option-card:disabled {
-  cursor: default;
 }
 
 .option-card.voted {
@@ -101,11 +96,49 @@ h2 {
   box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.18);
 }
 
+.option-image-button {
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.option-image-button:disabled {
+  cursor: default;
+}
+
 .option-card img {
   width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
   border-radius: 8px;
+  display: block;
+}
+
+.vote-button {
+  width: 100%;
+  border: none;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #f59e0b, #fbbf24);
+  color: #1f2937;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.7rem 0.9rem;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.15s ease;
+}
+
+.vote-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.vote-button:disabled {
+  opacity: 0.7;
+  cursor: default;
 }
 
 .no-image {
@@ -142,6 +175,57 @@ h2 {
   font-size: 0.8rem;
   color: #64748b;
   font-weight: 600;
+}
+
+.image-zoom-backdrop {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgba(15, 23, 42, 0.78);
+  backdrop-filter: blur(6px);
+  z-index: 1000;
+}
+
+.image-zoom-panel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: min(90vw, 960px);
+  max-height: 90vh;
+  padding: 1rem;
+  border-radius: 1rem;
+  background: rgba(15, 23, 42, 0.9);
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.35);
+}
+
+.image-zoom-image {
+  display: block;
+  max-width: 100%;
+  max-height: 86vh;
+  object-fit: contain;
+  border-radius: 0.75rem;
+}
+
+.image-zoom-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 2.25rem;
+  height: 2.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.8);
+  color: #fff;
+  font-size: 1.8rem;
+  line-height: 1;
+  cursor: pointer;
 }
 
 .thanks {

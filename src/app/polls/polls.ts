@@ -20,6 +20,7 @@ export class Polls {
   error = signal<string | null>(null);
   votingPollId = signal<number | null>(null);
   voteError = signal<string | null>(null);
+  selectedZoomImage = signal<{ src: string; alt: string } | null>(null);
 
   ngOnInit(): void {
     this.api.getPolls().subscribe({
@@ -76,6 +77,14 @@ export class Polls {
         this.votingPollId.set(null);
       },
     });
+  }
+
+  openImageZoom(src: string, alt: string): void {
+    this.selectedZoomImage.set({ src, alt });
+  }
+
+  closeImageZoom(): void {
+    this.selectedZoomImage.set(null);
   }
 
   private removeVote(poll: IPoll): void {

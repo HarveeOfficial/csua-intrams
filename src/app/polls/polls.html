@@ -26,20 +26,35 @@
 
           <div class="option-grid">
             @for (option of poll.options; track option.id) {
-              <button
-                type="button"
+              <div
                 class="option-card"
                 [class.voted]="hasVoted(poll.id)"
                 [class.selected]="selectedOptionId(poll.id) === option.id"
-                [disabled]="(hasVoted(poll.id) && selectedOptionId(poll.id) !== option.id) || votingPollId() === poll.id"
-                (click)="vote(poll, option.id)"
               >
-                @if (option.imageUrl) {
-                  <img [src]="option.imageUrl" [alt]="option.text" />
-                } @else {
-                  <div class="no-image" aria-hidden="true">No image</div>
-                }
+                <button
+                  type="button"
+                  class="option-image-button"
+                  [disabled]="votingPollId() === poll.id"
+                  (click)="option.imageUrl ? openImageZoom(option.imageUrl, option.text) : null"
+                  [attr.aria-label]="'Zoom image for ' + option.text"
+                >
+                  @if (option.imageUrl) {
+                    <img [src]="option.imageUrl" [alt]="option.text" />
+                  } @else {
+                    <div class="no-image" aria-hidden="true">No image</div>
+                  }
+                </button>
+
                 <span class="option-text">{{ option.text }}</span>
+
+                <button
+                  type="button"
+                  class="vote-button"
+                  [disabled]="(hasVoted(poll.id) && selectedOptionId(poll.id) !== option.id) || votingPollId() === poll.id"
+                  (click)="vote(poll, option.id)"
+                >
+                  {{ hasVoted(poll.id) && selectedOptionId(poll.id) === option.id ? 'Voted' : 'Vote' }}
+                </button>
 
                 @if (hasVoted(poll.id)) {
                   <div class="result-bar">
@@ -47,7 +62,7 @@
                   </div>
                   <span class="result-percentage">{{ percentage(option.voteCount, poll.totalVotes) }}% ({{ option.voteCount }})</span>
                 }
-              </button>
+              </div>
             }
           </div>
 
@@ -59,3 +74,14 @@
     </div>
   }
 </section>
+
+@if (selectedZoomImage(); as zoomedImage) {
+  <div class="image-zoom-backdrop" (click)="closeImageZoom()">
+    <div class="image-zoom-panel" role="dialog" aria-modal="true" aria-label="Zoomed image preview" (click)="$event.stopPropagation()">
+      <button type="button" class="image-zoom-close" aria-label="Close image preview" (click)="closeImageZoom()">
+        ×
+      </button>
+      <img class="image-zoom-image" [src]="zoomedImage.src" [alt]="zoomedImage.alt" />
+    </div>
+  </div>
+}
