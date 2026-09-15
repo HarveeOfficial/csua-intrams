@@ -206,9 +206,25 @@ class PollController extends Controller
             'id' => $option->id,
             'text' => $option->text,
             'imageUrl' => $option->image_path
-                ? Storage::disk('public')->url($option->image_path)
+                ? $this->publicStorageUrl($option->image_path, $request)
                 : null,
             'voteCount' => $option->vote_count,
         ];
+    }
+
+    private function publicStorageUrl(string $path, Request $request): string
+    {
+        $configuredBase = trim((string) config('app.url'), '/');
+        if ($configuredBase !== '' && ! str_contains($configuredBase, 'localhost')) {
+            return rtrim($configuredBase, '/').'/storage/'.ltrim($path, '/');
+        }
+
+        $forwardedProto = $request->headers->get('X-Forwarded-Proto');
+        $forwardedHost = $request->headers->get('X-Forwarded-Host');
+
+        $scheme = is_string($forwardedProto) ? explode(',', $forwardedProto)[0] : $request->getScheme();
+        $host = is_string($forwardedHost) ? explode(',', $forwardedHost)[0] : $request->getHttpHost();
+
+        return sprintf('%s://%s/storage/%s', $scheme, $host, ltrim($path, '/'));
     }
 }

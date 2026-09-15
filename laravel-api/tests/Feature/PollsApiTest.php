@@ -44,4 +44,25 @@ class PollsApiTest extends TestCase
             'vote_count' => 0,
         ]);
     }
+
+    public function test_poll_images_use_the_live_https_host_in_the_response(): void
+    {
+        $poll = Poll::query()->create([
+            'title' => 'UM Shirt Design',
+            'active' => true,
+        ]);
+
+        $poll->options()->create([
+            'text' => 'UM Shirt Design #1',
+            'image_path' => 'poll-options/shirt-design.jpg',
+            'vote_count' => 0,
+        ]);
+
+        $response = $this->withServerVariables([
+            'HTTPS' => 'on',
+            'HTTP_HOST' => 'api.intrams.csuaparri.net',
+        ])->getJson('/api/polls');
+
+        $response->assertOk()->assertJsonPath('0.options.0.imageUrl', 'https://api.intrams.csuaparri.net/storage/poll-options/shirt-design.jpg');
+    }
 }
