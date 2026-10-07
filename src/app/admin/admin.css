@@ -1,6 +1,5 @@
-.admin-nav {
-	scrollbar-width: thin;
-	overscroll-behavior-inline: contain;
+.admin-menu {
+	display: none;
 }
 
 .engagement-panel {
@@ -260,16 +259,6 @@
 }
 
 @media (max-width: 639px) {
-	.admin-nav {
-		width: 100%;
-		padding-right: 0.25rem;
-		scrollbar-width: none;
-	}
-
-	.admin-nav::-webkit-scrollbar {
-		display: none;
-	}
-
   .engagement-header,
   .chart-panel,
   .stats-grid {

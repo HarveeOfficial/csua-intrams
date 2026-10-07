@@ -16,7 +16,11 @@
       >
         <!-- <span class="font-semibold">Assigned Event:</span> {{ assignedSports() }} -->
       </div>
-      <div class="admin-nav flex gap-3 overflow-x-auto max-w-full pb-1 sm:pb-0 snap-x">
+      <details class="admin-menu">
+        <summary class="inline-flex cursor-pointer list-none items-center gap-2 rounded-full border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-700 focus-visible:outline-2 focus-visible:outline-indigo-500">
+          Menu
+        </summary>
+        <nav class="admin-nav mt-3 flex gap-3 overflow-x-auto max-w-full pb-1 sm:pb-0 snap-x" aria-label="Admin navigation">
         <a
           *ngIf="!isAdmin()"
           routerLink="/admin/colleges"
@@ -119,7 +123,8 @@
             <span class="tracking-wide">📖 User Manual</span>
           </span>
         </a>
-      </div>
+        </nav>
+      </details>
     </div>
     <div class="flex items-center gap-2 w-full sm:w-auto">
       <button

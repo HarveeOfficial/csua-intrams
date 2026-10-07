@@ -18,9 +18,12 @@
       }
     </p>
 
-    <div
-      class="hero-actions mt-5 flex flex-wrap items-center gap-3 justify-center"
-    >
+    <details class="hero-menu mt-5">
+      <summary class="hero-menu-toggle">Menu</summary>
+      <nav
+        class="hero-actions mt-3 flex flex-wrap items-center gap-3 justify-center"
+        aria-label="Main navigation"
+      >
       <a
         hidden
         routerLink="/standings"
@@ -244,7 +247,8 @@
         {{ dashboardLabel() }}
       </a>
       }
-    </div>
+      </nav>
+    </details>
   </div>
 
   <!-- 🎉 Floating intramural confetti icons -->
