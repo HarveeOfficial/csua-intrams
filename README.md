@@ -2,6 +2,8 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.0.0.
 
+University Meet implementation and rollout notes: [UNIVERSITY_MEET.md](UNIVERSITY_MEET.md).
+
 ## MySQL database
 
 The app now reads and writes colleges, schedules, and admin accounts through the Laravel API in `laravel-api`.

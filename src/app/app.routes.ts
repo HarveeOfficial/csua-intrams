@@ -1,4 +1,6 @@
 import { Routes } from '@angular/router';
+import { campusStaffGuard } from './guards/campus-staff.guard';
+import { universityMeetAdminGuard } from './guards/university-meet-admin.guard';
 
 export const routes: Routes = [
   {
@@ -31,6 +33,15 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'university-meet',
+    loadComponent: () => import('./university-meet/university-meet').then((m) => m.UniversityMeet),
+  },
+  {
+    path: 'um-admin',
+    canActivate: [universityMeetAdminGuard],
+    loadComponent: () => import('./university-meet/university-meet-admin').then((m) => m.UniversityMeetAdmin),
+  },
+  {
     path: 'downloads',
     loadComponent: () => import('./downloadable-files/downloadable-files').then((m) => m.DownloadableFiles),
   },
@@ -53,6 +64,7 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
+    canActivate: [campusStaffGuard],
     loadComponent: () => import('./admin/admin').then((m) => m.Admin),
     loadChildren: () => import('./admin/admin.routes').then((m) => m.routes),
   },

@@ -50,7 +50,7 @@ export class App implements OnInit, OnDestroy {
   starValues = Array.from({ length: 5 }, (_, index) => index + 1);
   private readonly sessionStartedAt = Date.now();
   private readonly recordSessionTime = (): void => {
-    if (!this.router.url.startsWith('/admin')) {
+    if (!this.isAdminRoute()) {
       this.dataApi.recordTimeSpent((Date.now() - this.sessionStartedAt) / 1000);
     }
   };
@@ -88,7 +88,7 @@ export class App implements OnInit, OnDestroy {
     document.addEventListener('click', this.handleImageClick);
     document.addEventListener('keydown', this.handleEscapeKey);
 
-    if (!this.router.url.startsWith('/admin')) {
+    if (!this.isAdminRoute()) {
       this.dataApi.recordSiteVisit().subscribe();
       window.addEventListener('pagehide', this.recordSessionTime, { once: true });
     }
@@ -100,7 +100,11 @@ export class App implements OnInit, OnDestroy {
   }
 
   isAdminRoute() {
-    return this.router.url.startsWith('/admin');
+    return this.router.url.startsWith('/admin') || this.router.url.startsWith('/um-admin');
+  }
+
+  isUniversityMeetRoute(): boolean {
+    return this.router.url.startsWith('/university-meet') || this.router.url.startsWith('/um-admin');
   }
 
   private readStoredRating(): number {
@@ -148,7 +152,13 @@ export class App implements OnInit, OnDestroy {
   }
 
   dashboardLabel(): string {
-    return this.currentUser()?.role === 'admin' ? 'Admin Dashboard' : 'Tournament Manager Dashboard';
+    const role = this.currentUser()?.role;
+    return role === 'um_admin' ? 'University Meet Dashboard'
+      : role === 'admin' ? 'Admin Dashboard' : 'Tournament Manager Dashboard';
+  }
+
+  dashboardRoute(): string {
+    return this.currentUser()?.role === 'um_admin' ? '/um-admin' : '/admin';
   }
 
   dashboardAriaLabel(): string {

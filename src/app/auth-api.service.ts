@@ -6,7 +6,7 @@ import { API_BASE_URL } from './api-config';
 export interface UserSession {
   id: number;
   email: string;
-  role: 'admin' | 'tm';
+  role: 'admin' | 'tm' | 'um_admin';
   sport_id: number | null;
   sport_name: string | null;
   sport_ids: number[];

@@ -12,4 +12,4 @@ deployment:
     - /bin/cp laravel-api/artisan $DEPLOYPATH
     - /bin/cp laravel-api/composer.json $DEPLOYPATH
     - /bin/cp laravel-api/composer.lock $DEPLOYPATH
-    - cd $DEPLOYPATH && composer install --no-dev --optimize-autoloader
+    - cd $DEPLOYPATH && composer install --no-interaction --no-dev --optimize-autoloader && php artisan config:clear && php artisan migrate --path=database/migrations/2026_10_07_010000_create_university_meet_matches_table.php --force && php artisan intrams:provision-um-admin

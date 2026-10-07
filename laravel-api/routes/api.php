@@ -11,7 +11,10 @@ use App\Http\Controllers\Api\ScheduleController;
 use App\Http\Controllers\Api\SiteAnalyticsController;
 use App\Http\Controllers\Api\SportController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\UniversityMeetMatchController;
+use App\Http\Middleware\EnsureCampusStaff;
 use App\Http\Middleware\EnsureAdmin;
+use App\Http\Middleware\EnsureUniversityMeetAdmin;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/auth/login', [AuthController::class, 'login'])->middleware('throttle:login');
@@ -20,6 +23,7 @@ Route::get('/colleges', [CollegeController::class, 'index']);
 Route::get('/colleges/{college:code}', [CollegeController::class, 'show']);
 
 Route::get('/schedule', [ScheduleController::class, 'index']);
+Route::get('/university-meet/matches', [UniversityMeetMatchController::class, 'index']);
 
 Route::get('/sports', [SportController::class, 'index']);
 Route::get('/events', [EventDefinitionController::class, 'index']);
@@ -39,18 +43,25 @@ Route::post('/site-ratings', [SiteAnalyticsController::class, 'submitRating']);
 Route::post('/site-analytics', [SiteAnalyticsController::class, 'store']);
 
 Route::middleware('auth:sanctum')->group(function (): void {
-    Route::post('/events', [EventDefinitionController::class, 'store']);
-    Route::patch('/events/{event}', [EventDefinitionController::class, 'update']);
-    Route::delete('/events/{event}', [EventDefinitionController::class, 'destroy']);
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::patch('/auth/password', [AuthController::class, 'changePassword']);
 
-    // schedule: accessible to both admin and tm
-    Route::post('/schedule', [ScheduleController::class, 'store']);
-    Route::patch('/schedule/{id}', [ScheduleController::class, 'updateWinner']);
-    Route::delete('/schedule/{id}', [ScheduleController::class, 'destroy']);
-    Route::patch('/colleges/{college:code}/standing', [CollegeController::class, 'updateStanding']);
-    Route::delete('/colleges/{college:code}/standing', [CollegeController::class, 'deleteStanding']);
+    Route::middleware(EnsureCampusStaff::class)->group(function (): void {
+        Route::post('/events', [EventDefinitionController::class, 'store']);
+        Route::patch('/events/{event}', [EventDefinitionController::class, 'update']);
+        Route::delete('/events/{event}', [EventDefinitionController::class, 'destroy']);
+        Route::post('/schedule', [ScheduleController::class, 'store']);
+        Route::patch('/schedule/{id}', [ScheduleController::class, 'updateWinner']);
+        Route::delete('/schedule/{id}', [ScheduleController::class, 'destroy']);
+        Route::patch('/colleges/{college:code}/standing', [CollegeController::class, 'updateStanding']);
+        Route::delete('/colleges/{college:code}/standing', [CollegeController::class, 'deleteStanding']);
+    });
+
+    Route::middleware(EnsureUniversityMeetAdmin::class)->group(function (): void {
+        Route::post('/university-meet/matches', [UniversityMeetMatchController::class, 'store']);
+        Route::put('/university-meet/matches/{match}', [UniversityMeetMatchController::class, 'update']);
+        Route::delete('/university-meet/matches/{match}', [UniversityMeetMatchController::class, 'destroy']);
+    });
 
     // admin-only routes
     Route::middleware(EnsureAdmin::class)->group(function (): void {
