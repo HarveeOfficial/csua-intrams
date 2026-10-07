@@ -62,6 +62,18 @@ The `.cpanel.yml` task copies the Laravel files, installs Composer dependencies,
 
 In cPanel's Git Version Control **pull deployment** workflow, **Update from Remote** only fetches the commit. **Deploy HEAD Commit** runs `.cpanel.yml` and therefore performs the migration and account provisioning. [cPanel's deployment guide](https://docs.cpanel.net/knowledge-base/web-services/guide-to-git-deployment/) documents these as separate actions.
 
-`.cpanel.yml` does not build or deploy the Angular frontend. `firebase.json` points Firebase Hosting at `dist/csua-intrams/browser`; the GitHub pull request workflow builds and publishes a Firebase preview. Verify the production frontend release path separately before rollout. The frontend should be published after the API code and migration are live.
+## Frontend release
+
+The live Apache site currently serves the same Angular files as the tracked `dist/csua-intrams/browser` directory. The repository's Firebase workflow creates pull request previews; it does not publish this live site. The cPanel task handles Laravel and does not run `npm`.
+
+For this deployment path, build the frontend locally from the latest `main`, then commit the generated `dist/csua-intrams` files with the release:
+
+```sh
+npm ci
+npm run build
+git add -A dist/csua-intrams
+```
+
+After pushing `main`, update the cPanel-managed repository from the remote and deploy its HEAD commit for the Laravel tasks. Check that the live site's `index.html` references the newly built `main-*.js` asset. If it still references an older hash, confirm the domain's Document Root in cPanel; it may serve a separate copy of `dist`.
 
 This implementation is scoped to one current University Meet dataset. If results need separate annual editions, add a meet/edition identifier before entering a second year's matches.
