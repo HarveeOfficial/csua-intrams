@@ -10,8 +10,11 @@ interface UniversityMeetEventGroup {
 
 interface PagedUniversityMeetEventGroup extends UniversityMeetEventGroup {
   pageIndex: number;
-  match: UniversityMeetMatch;
+  pageCount: number;
+  pageMatches: UniversityMeetMatch[];
 }
+
+const GAMES_PER_PAGE = 4;
 
 @Component({
   selector: 'app-university-meet',
@@ -27,12 +30,17 @@ export class UniversityMeet implements OnInit, OnDestroy {
   private readonly eventPages = signal<Record<string, number>>({});
   eventGroups = computed<PagedUniversityMeetEventGroup[]>(() =>
     this.groupMatches(this.matches()).map((group) => {
-      const pageIndex = Math.min(this.eventPages()[group.key] ?? 0, group.matches.length - 1);
+      const pageCount = Math.ceil(group.matches.length / GAMES_PER_PAGE);
+      const pageIndex = Math.min(this.eventPages()[group.key] ?? 0, pageCount - 1);
 
       return {
         ...group,
         pageIndex,
-        match: group.matches[pageIndex],
+        pageCount,
+        pageMatches: group.matches.slice(
+          pageIndex * GAMES_PER_PAGE,
+          (pageIndex + 1) * GAMES_PER_PAGE,
+        ),
       };
     }),
   );
@@ -66,7 +74,7 @@ export class UniversityMeet implements OnInit, OnDestroy {
   }
 
   changeGamePage(group: PagedUniversityMeetEventGroup, direction: -1 | 1): void {
-    const pageIndex = Math.max(0, Math.min(group.pageIndex + direction, group.matches.length - 1));
+    const pageIndex = Math.max(0, Math.min(group.pageIndex + direction, group.pageCount - 1));
     this.eventPages.update((pages) => ({ ...pages, [group.key]: pageIndex }));
   }
 

@@ -14,44 +14,50 @@
   } @else if (matches().length === 0) {
     <p class="rounded-xl bg-white p-6 text-slate-600 shadow">No University Meet matches have been posted yet.</p>
   } @else {
-    <div class="grid gap-4 md:grid-cols-2">
+    <div class="space-y-6">
       @for (group of eventGroups(); track group.key) {
-        <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm" [attr.aria-label]="group.eventName + ', ' + (group.category === 'men' ? 'Men' : 'Women') + ' results'">
-          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 px-5 py-4">
+        <section [attr.aria-label]="group.eventName + ', ' + (group.category === 'men' ? 'Men' : 'Women') + ' results'">
+          <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
             <h2 class="font-semibold text-indigo-700">
               {{ group.eventName }} <span class="text-slate-400">·</span> {{ group.category === 'men' ? 'Men' : 'Women' }}
             </h2>
             <span class="text-sm text-slate-500">{{ group.matches.length }} {{ group.matches.length === 1 ? 'game' : 'games' }}</span>
           </div>
-          <article class="p-5">
-            <div class="flex items-center justify-between gap-2 text-sm text-slate-500">
-              <span>Match result</span>
-              <span>Game {{ group.match.gameNumber }}</span>
-            </div>
-            <div class="mt-5 grid grid-cols-[1fr_auto_1fr] items-center gap-3 text-center">
-              <div [class.font-bold]="group.match.winnerSide === 'a'" class="break-words text-slate-900">{{ group.match.teamA }}</div>
-              <div class="rounded-lg bg-slate-100 px-3 py-2 text-xl font-bold tabular-nums text-slate-900">
-                {{ group.match.scoreA }}–{{ group.match.scoreB }}
-              </div>
-              <div [class.font-bold]="group.match.winnerSide === 'b'" class="break-words text-slate-900">{{ group.match.teamB }}</div>
-            </div>
-            <p class="mt-5 border-t border-slate-100 pt-3 text-sm font-semibold text-slate-700">{{ status(group.match) }}</p>
-          </article>
-          @if (group.matches.length > 1) {
-            <nav class="flex items-center justify-between gap-3 border-t border-slate-100 px-5 py-3" [attr.aria-label]="'Game paging for ' + group.eventName">
+          <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            @for (match of group.pageMatches; track match.id) {
+              <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <div class="flex items-center justify-between gap-2 text-sm text-slate-500">
+                  <span>Match result</span>
+                  <span>Game {{ match.gameNumber }}</span>
+                </div>
+                <div class="mt-5 grid grid-cols-[1fr_auto_1fr] items-center gap-3 text-center">
+                  <div [class.font-bold]="match.winnerSide === 'a'" class="break-words text-slate-900">{{ match.teamA }}</div>
+                  <div class="rounded-lg bg-slate-100 px-3 py-2 text-xl font-bold tabular-nums text-slate-900">
+                    {{ match.scoreA }}–{{ match.scoreB }}
+                  </div>
+                  <div [class.font-bold]="match.winnerSide === 'b'" class="break-words text-slate-900">{{ match.teamB }}</div>
+                </div>
+                <p class="mt-5 border-t border-slate-100 pt-3 text-sm font-semibold text-slate-700">{{ status(match) }}</p>
+              </article>
+            }
+          </div>
+          @if (group.pageCount > 1) {
+            <nav class="mt-4 flex items-center justify-between gap-3" [attr.aria-label]="'Game paging for ' + group.eventName">
               <button
                 type="button"
                 class="rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 enabled:hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
                 [disabled]="group.pageIndex === 0"
-                [attr.aria-label]="'Previous game in ' + group.eventName"
+                [attr.aria-label]="'Previous games in ' + group.eventName"
                 (click)="changeGamePage(group, -1)"
               >Previous</button>
-              <span class="text-sm tabular-nums text-slate-600">Game {{ group.pageIndex + 1 }} of {{ group.matches.length }}</span>
+              <span class="text-sm tabular-nums text-slate-600">
+                Games {{ group.pageIndex * 4 + 1 }}–{{ group.pageIndex * 4 + group.pageMatches.length }} of {{ group.matches.length }}
+              </span>
               <button
                 type="button"
                 class="rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 enabled:hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
-                [disabled]="group.pageIndex === group.matches.length - 1"
-                [attr.aria-label]="'Next game in ' + group.eventName"
+                [disabled]="group.pageIndex === group.pageCount - 1"
+                [attr.aria-label]="'Next games in ' + group.eventName"
                 (click)="changeGamePage(group, 1)"
               >Next</button>
             </nav>
