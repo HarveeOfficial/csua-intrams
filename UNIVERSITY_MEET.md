@@ -4,12 +4,9 @@ This feature adds a separate University Meet results flow alongside the existing
 
 ## Scoring
 
-- `planned_games` is the number of games scheduled for a matchup.
-- `games_won_a` and `games_won_b` are the games won by each team.
-- The first team to `floor(planned_games / 2) + 1` wins is the winner. The API calculates `winnerSide` and `winner` from the scores; administrators do not enter a winner separately.
-- With 10 planned games, 6 wins are required. A 5–5 score stays open for one tiebreak game, ending 6–5. A team may also reach 6 earlier, ending the series then.
-- With 7 planned games, 4 wins are required.
-- The API rejects scores above the winning threshold, scores where both teams reach it, and totals above the possible number of games.
+- `score_a` and `score_b` are the scores entered for Team A and Team B.
+- The team with the higher score wins. Equal scores are reported as tied, and `0–0` is not started.
+- Scores must be non-negative integers that fit the database's unsigned small-integer columns. The API calculates `winnerSide` and `winner` from the scores; administrators do not enter a winner separately.
 
 ## API and pages
 
@@ -45,7 +42,7 @@ cd ..
 npm run build
 ```
 
-The feature tests cover public reads, create/update/delete, an early finish, a 5–5 tiebreak, invalid scores, and role separation.
+The feature tests cover public reads, create/update/delete, score-based winners and ties, invalid scores, and role separation.
 
 ## cPanel deployment without terminal access
 
@@ -58,13 +55,13 @@ UM_ADMIN_PASSWORD="replace-with-a-long-unique-password"
 
 Keep these values out of Git. Use an email address that is not already assigned to a campus account. The deployment command creates the `um_admin` account once; later deployments leave its password unchanged. After the first successful deployment, `UM_ADMIN_PASSWORD` may be removed from the deployed `.env` file while `UM_ADMIN_EMAIL` stays. The UM admin can change their password from the entry page.
 
-The `.cpanel.yml` task copies the Laravel files, installs Composer dependencies, clears cached configuration, runs **only the University Meet migration** with `php artisan migrate --path=database/migrations/2026_10_07_010000_create_university_meet_matches_table.php --force`, and runs `php artisan intrams:provision-um-admin`. The chained commands stop if one fails. The account command refuses to change the role of an existing campus account.
+The `.cpanel.yml` task copies the Laravel files, installs Composer dependencies, clears cached configuration, runs the University Meet table-creation migration and then the score migration, and runs `php artisan intrams:provision-um-admin`. The chained commands stop if one fails. The score migration preserves existing team scores while removing `planned_games`. The account command refuses to change the role of an existing campus account.
 
 In cPanel's Git Version Control **pull deployment** workflow, **Update from Remote** only fetches the commit. **Deploy HEAD Commit** runs `.cpanel.yml` and therefore performs the migration and account provisioning. [cPanel's deployment guide](https://docs.cpanel.net/knowledge-base/web-services/guide-to-git-deployment/) documents these as separate actions.
 
 ## Frontend release
 
-The live Apache site currently serves the same Angular files as the tracked `dist/csua-intrams/browser` directory. The repository's Firebase workflow creates pull request previews; it does not publish this live site. The cPanel task handles Laravel and does not run `npm`.
+The live Apache site serves Angular files from the tracked `dist/csua-intrams/browser` directory. The repository's Firebase workflow creates pull request previews; it does not publish this live site. The cPanel task copies the built frontend to `/home/csuaparr/repositories/csua-intrams-deploy/` and handles the Laravel deployment.
 
 For this deployment path, build the frontend locally from the latest `main`, then commit the generated `dist/csua-intrams` files with the release:
 
@@ -74,6 +71,6 @@ npm run build
 git add -A dist/csua-intrams
 ```
 
-After pushing `main`, update the cPanel-managed repository from the remote and deploy its HEAD commit for the Laravel tasks. Check that the live site's `index.html` references the newly built `main-*.js` asset. If it still references an older hash, confirm the domain's Document Root in cPanel; it may serve a separate copy of `dist`.
+After pushing `main`, update the cPanel-managed repository from the remote and deploy its HEAD commit. This copies the current `dist/csua-intrams/browser` assets to the configured Document Root. Check that the live site's `index.html` references the newly built `main-*.js` asset, then hard-refresh the browser to load the new hashed assets.
 
 This implementation is scoped to one current University Meet dataset. If results need separate annual editions, add a meet/edition identifier before entering a second year's matches.

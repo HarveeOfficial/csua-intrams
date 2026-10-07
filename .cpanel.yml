@@ -2,6 +2,8 @@
 deployment:
   tasks:
     - export DEPLOYPATH=/home/csuaparr/public_html/repositories/intrams.csuaparri.net/laravel-api/
+    - export FRONTENDPATH=/home/csuaparr/repositories/csua-intrams-deploy/
+    - mkdir -p $FRONTENDPATH && /bin/cp -R dist/csua-intrams/browser/. $FRONTENDPATH
     - /bin/cp -R laravel-api/app $DEPLOYPATH
     - /bin/cp -R laravel-api/bootstrap $DEPLOYPATH
     - /bin/cp -R laravel-api/config $DEPLOYPATH
@@ -12,4 +14,4 @@ deployment:
     - /bin/cp laravel-api/artisan $DEPLOYPATH
     - /bin/cp laravel-api/composer.json $DEPLOYPATH
     - /bin/cp laravel-api/composer.lock $DEPLOYPATH
-    - cd $DEPLOYPATH && composer install --no-interaction --no-dev --optimize-autoloader && php artisan config:clear && php artisan migrate --path=database/migrations/2026_10_07_010000_create_university_meet_matches_table.php --force && php artisan intrams:provision-um-admin
+    - cd $DEPLOYPATH && composer install --no-interaction --no-dev --optimize-autoloader && php artisan config:clear && php artisan migrate --path=database/migrations/2026_10_07_010000_create_university_meet_matches_table.php --force && php artisan migrate --path=database/migrations/2026_10_07_020000_replace_planned_games_with_scores_on_university_meet_matches.php --force && php artisan intrams:provision-um-admin
