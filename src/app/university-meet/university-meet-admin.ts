@@ -31,6 +31,13 @@ export class UniversityMeetAdmin implements OnInit {
   matches = signal<UniversityMeetMatch[]>([]);
   error = signal('');
   saving = signal(false);
+  showPasswordForm = signal(false);
+  changingPassword = signal(false);
+  passwordMessage = signal('');
+  passwordError = signal('');
+  currentPassword = '';
+  newPassword = '';
+  confirmPassword = '';
   editingId: number | null = null;
   form = emptyMatch();
 
@@ -107,5 +114,28 @@ export class UniversityMeetAdmin implements OnInit {
   async logout(): Promise<void> {
     await this.auth.logout();
     await this.router.navigate(['/university-meet']);
+  }
+
+  async changePassword(): Promise<void> {
+    this.passwordError.set('');
+    this.passwordMessage.set('');
+    if (this.newPassword !== this.confirmPassword) {
+      this.passwordError.set('New passwords do not match.');
+      return;
+    }
+
+    this.changingPassword.set(true);
+    try {
+      await this.auth.changePassword(this.currentPassword, this.newPassword, this.confirmPassword);
+      this.currentPassword = '';
+      this.newPassword = '';
+      this.confirmPassword = '';
+      this.passwordMessage.set('Password updated.');
+      this.showPasswordForm.set(false);
+    } catch (error: any) {
+      this.passwordError.set(error?.error?.message || 'Could not change password.');
+    } finally {
+      this.changingPassword.set(false);
+    }
   }
 }

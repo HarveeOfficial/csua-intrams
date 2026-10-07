@@ -6,9 +6,34 @@
     </div>
     <div class="flex gap-3 text-sm font-semibold">
       <a routerLink="/university-meet" class="rounded-lg border border-indigo-200 px-4 py-2 text-indigo-700">Public page</a>
+      <button type="button" (click)="showPasswordForm.set(!showPasswordForm())" class="rounded-lg border border-slate-300 px-4 py-2 text-slate-700">Change password</button>
       <button type="button" (click)="logout()" class="rounded-lg bg-slate-800 px-4 py-2 text-white">Logout</button>
     </div>
   </div>
+
+  @if (passwordMessage()) {
+    <p role="status" class="mb-5 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800">{{ passwordMessage() }}</p>
+  }
+  @if (showPasswordForm()) {
+    <form (ngSubmit)="changePassword()" #passwordForm="ngForm" class="mb-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <h2 class="text-xl font-semibold text-slate-900">Change password</h2>
+      <div class="mt-4 grid gap-4 sm:grid-cols-3">
+        <label class="text-sm font-medium text-slate-700">Current password
+          <input name="current_password" type="password" autocomplete="current-password" required [(ngModel)]="currentPassword" class="mt-1 w-full rounded-lg border border-slate-300 p-2">
+        </label>
+        <label class="text-sm font-medium text-slate-700">New password
+          <input name="new_password" type="password" autocomplete="new-password" required minlength="8" [(ngModel)]="newPassword" class="mt-1 w-full rounded-lg border border-slate-300 p-2">
+        </label>
+        <label class="text-sm font-medium text-slate-700">Confirm new password
+          <input name="confirm_password" type="password" autocomplete="new-password" required minlength="8" [(ngModel)]="confirmPassword" class="mt-1 w-full rounded-lg border border-slate-300 p-2">
+        </label>
+      </div>
+      @if (passwordError()) {
+        <p role="alert" class="mt-3 text-sm text-red-700">{{ passwordError() }}</p>
+      }
+      <button type="submit" [disabled]="passwordForm.invalid || changingPassword()" class="mt-4 rounded-lg bg-slate-800 px-5 py-2 font-semibold text-white disabled:opacity-50">{{ changingPassword() ? 'Saving...' : 'Update password' }}</button>
+    </form>
+  }
 
   @if (error()) {
     <p role="alert" class="mb-5 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">{{ error() }}</p>
