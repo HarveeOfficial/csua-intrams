@@ -5,7 +5,7 @@ import { universityMeetAdminGuard } from './guards/university-meet-admin.guard';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'program-of-events',
+    redirectTo: 'university-meet',
     pathMatch: 'full',
   },
   {
