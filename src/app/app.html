@@ -9,10 +9,13 @@
         draggable="false"
       />
     </div>
-    <h1 class="hero-title">CSUA Intramurals</h1>
+    <h1 class="hero-title">{{ isUniversityMeetRoute() ? 'University Meet' : 'CSUA Intramurals' }}</h1>
     <p class="hero-tagline">
-      Live standings, medals, and event performance tracking for the campus
-      intramural games.
+      @if (isUniversityMeetRoute()) {
+        Match results and games won across the University Meet.
+      } @else {
+        Live standings, medals, and event performance tracking for the campus intramural games.
+      }
     </p>
 
     <div
@@ -88,6 +91,15 @@
           <path d="M8 14h2M14 14h2M8 18h2" />
         </svg>
         Program
+      </a>
+
+      <a
+        routerLink="/university-meet"
+        routerLinkActive="ring-2 ring-offset-2 ring-amber-400"
+        class="inline-flex items-center gap-2 text-xs font-semibold tracking-wide uppercase rounded-full px-5 py-2.5 bg-white text-indigo-700 shadow hover:shadow-md transition-all duration-300 border border-indigo-100"
+        aria-label="View University Meet results"
+      >
+        University Meet
       </a>
 
       <a
@@ -204,7 +216,7 @@
       </a>
       } @else {
       <a
-        routerLink="/admin"
+        [routerLink]="dashboardRoute()"
         class="inline-flex items-center gap-2 text-xs font-semibold tracking-wide uppercase rounded-full px-5 py-2.5 bg-white text-indigo-700 shadow hover:shadow-md transition-all duration-300 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 border border-indigo-100"
         [attr.aria-label]="dashboardAriaLabel()"
       >
@@ -266,7 +278,7 @@
 
 <footer class="site-footer">
   <div class="footer-inner">
-    <p class="footer-copyright">&copy; 2026 CSUA Intramurals. All rights reserved.</p>
+    <p class="footer-copyright">&copy; 2026 {{ isUniversityMeetRoute() ? 'University Meet' : 'CSUA Intramurals' }}. All rights reserved.</p>
 
     <button type="button" class="rate-trigger" (click)="openRatingModal()">
       Rate Us

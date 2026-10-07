@@ -80,9 +80,10 @@ export class Login implements AfterViewInit, OnDestroy {
       try {
         this.authError.set(null);
         await this.auth.login(email!, password!, this.recaptchaToken()!);
-        const destination = this.auth.currentUser()?.role === 'admin'
-          ? '/admin'
-          : '/admin/event-sched-and-stats';
+        const role = this.auth.currentUser()?.role;
+        const destination = role === 'um_admin'
+          ? '/um-admin'
+          : role === 'admin' ? '/admin' : '/admin/event-sched-and-stats';
         this.router.navigate([destination]);
       } catch (err) {
         this.authError.set((err as any)?.error?.message || 'Login failed. Please try again.');
@@ -94,4 +95,3 @@ export class Login implements AfterViewInit, OnDestroy {
     }
   }
 }
-

@@ -36,7 +36,7 @@ class AuthController extends Controller
         }
 
         $user->tokens()->delete();
-        $abilities = $user->role === 'admin' ? ['admin'] : ['tm'];
+        $abilities = [$user->role];
         $token = $user->createToken('api-token', $abilities, now()->addHours(8))->plainTextToken;
 
         $sports = $user->sports()->orderBy('name')->get(['intrams_sports.id', 'intrams_sports.name']);

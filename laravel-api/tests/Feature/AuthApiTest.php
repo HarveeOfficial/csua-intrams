@@ -12,6 +12,12 @@ class AuthApiTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        config()->set('services.recaptcha.secret', null);
+    }
+
     public function test_login_returns_token_for_valid_credentials(): void
     {
         User::query()->create([
@@ -24,6 +30,7 @@ class AuthApiTest extends TestCase
         $response = $this->postJson('/api/auth/login', [
             'email' => 'admin@example.com',
             'password' => 'secret123',
+            'recaptcha_token' => 'test-token',
         ]);
 
         $response->assertOk()->assertJsonStructure([
@@ -44,6 +51,7 @@ class AuthApiTest extends TestCase
         $response = $this->postJson('/api/auth/login', [
             'email' => 'admin@example.com',
             'password' => 'secret123',
+            'recaptcha_token' => 'test-token',
         ]);
 
         $response->assertOk();
@@ -62,6 +70,7 @@ class AuthApiTest extends TestCase
         $response = $this->postJson('/api/auth/login', [
             'email' => 'admin@example.com',
             'password' => 'wrong-password',
+            'recaptcha_token' => 'test-token',
         ]);
 
         $response->assertStatus(401)->assertJson([
@@ -82,6 +91,7 @@ class AuthApiTest extends TestCase
         $this->postJson('/api/auth/login', [
             'email' => 'admin@example.com',
             'password' => 'secret123',
+            'recaptcha_token' => 'test-token',
         ])->assertOk();
 
         $this->assertSame(1, PersonalAccessToken::query()->count());
@@ -100,12 +110,14 @@ class AuthApiTest extends TestCase
             $this->postJson('/api/auth/login', [
                 'email' => 'admin@example.com',
                 'password' => 'wrong-password',
+                'recaptcha_token' => 'test-token',
             ])->assertStatus(401);
         }
 
         $this->postJson('/api/auth/login', [
             'email' => 'admin@example.com',
             'password' => 'wrong-password',
+            'recaptcha_token' => 'test-token',
         ])->assertStatus(429);
     }
 
@@ -121,6 +133,7 @@ class AuthApiTest extends TestCase
         $login = $this->postJson('/api/auth/login', [
             'email' => 'admin@example.com',
             'password' => 'secret123',
+            'recaptcha_token' => 'test-token',
         ]);
         $token = $login->json('token');
 
@@ -129,5 +142,23 @@ class AuthApiTest extends TestCase
             ->assertOk();
 
         $this->assertDatabaseCount('personal_access_tokens', 0);
+    }
+
+    public function test_university_meet_admin_receives_its_own_role_and_token_ability(): void
+    {
+        User::query()->create([
+            'name' => 'University Meet Admin',
+            'email' => 'um@example.com',
+            'password' => Hash::make('secret123'),
+            'role' => 'um_admin',
+        ]);
+
+        $this->postJson('/api/auth/login', [
+            'email' => 'um@example.com',
+            'password' => 'secret123',
+            'recaptcha_token' => 'test-token',
+        ])->assertOk()->assertJsonPath('user.role', 'um_admin');
+
+        $this->assertSame(['um_admin'], PersonalAccessToken::query()->firstOrFail()->abilities);
     }
 }
