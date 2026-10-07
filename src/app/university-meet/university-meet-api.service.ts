@@ -9,9 +9,8 @@ export interface UniversityMeetMatchInput {
   category: 'men' | 'women';
   team_a: string;
   team_b: string;
-  planned_games: number;
-  games_won_a: number;
-  games_won_b: number;
+  score_a: number;
+  score_b: number;
 }
 
 export interface UniversityMeetMatch {
@@ -21,10 +20,8 @@ export interface UniversityMeetMatch {
   category: 'men' | 'women';
   teamA: string;
   teamB: string;
-  plannedGames: number;
-  gamesWonA: number;
-  gamesWonB: number;
-  winsRequired: number;
+  scoreA: number;
+  scoreB: number;
   winnerSide: 'a' | 'b' | null;
   winner: string | null;
   updatedAt: string | null;

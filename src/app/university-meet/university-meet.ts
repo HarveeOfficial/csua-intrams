@@ -38,9 +38,6 @@ export class UniversityMeet implements OnInit, OnDestroy {
 
   status(match: UniversityMeetMatch): string {
     if (match.winner) return `${match.winner} wins`;
-    if (match.plannedGames % 2 === 0 && match.gamesWonA + match.gamesWonB === match.plannedGames) {
-      return 'Tiebreak game next';
-    }
-    return match.gamesWonA + match.gamesWonB === 0 ? 'Not started' : 'In progress';
+    return match.scoreA === 0 && match.scoreB === 0 ? 'Not started' : 'Tied';
   }
 }

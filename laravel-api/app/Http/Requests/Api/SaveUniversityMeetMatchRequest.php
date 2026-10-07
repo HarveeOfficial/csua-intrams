@@ -29,9 +29,8 @@ class SaveUniversityMeetMatchRequest extends FormRequest
             'category' => ['required', 'in:men,women'],
             'team_a' => ['required', 'string', 'max:255', 'different:team_b'],
             'team_b' => ['required', 'string', 'max:255'],
-            'planned_games' => ['required', 'integer', 'min:1', 'max:99'],
-            'games_won_a' => ['required', 'integer', 'min:0'],
-            'games_won_b' => ['required', 'integer', 'min:0'],
+            'score_a' => ['required', 'integer', 'min:0', 'max:65535'],
+            'score_b' => ['required', 'integer', 'min:0', 'max:65535'],
         ];
     }
 
@@ -40,16 +39,6 @@ class SaveUniversityMeetMatchRequest extends FormRequest
         $validator->after(function (Validator $validator): void {
             if ($validator->errors()->isNotEmpty()) {
                 return;
-            }
-
-            $planned = (int) $this->input('planned_games');
-            $a = (int) $this->input('games_won_a');
-            $b = (int) $this->input('games_won_b');
-            $winsRequired = intdiv($planned, 2) + 1;
-            $maximumPlayed = $planned + ($planned % 2 === 0 ? 1 : 0);
-
-            if ($a > $winsRequired || $b > $winsRequired || ($a === $winsRequired && $b === $winsRequired) || $a + $b > $maximumPlayed) {
-                $validator->errors()->add('games_won_a', 'Games won must describe a valid series score.');
             }
 
             if (mb_strtolower((string) $this->input('team_a')) === mb_strtolower((string) $this->input('team_b'))) {

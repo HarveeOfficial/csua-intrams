@@ -2,7 +2,7 @@
   <div class="mb-8">
     <p class="text-sm font-bold uppercase tracking-widest text-amber-700">University Meet</p>
     <h1 class="text-3xl font-bold text-slate-900">Match results</h1>
-    <p class="mt-2 text-slate-600">Scores show games won by each team. Results refresh every 30 seconds.</p>
+    <p class="mt-2 text-slate-600">Scores by Team A and Team B. Results refresh every 30 seconds.</p>
   </div>
 
   @if (error()) {
@@ -24,12 +24,11 @@
           <div class="mt-5 grid grid-cols-[1fr_auto_1fr] items-center gap-3 text-center">
             <div [class.font-bold]="match.winnerSide === 'a'" class="break-words text-slate-900">{{ match.teamA }}</div>
             <div class="rounded-lg bg-slate-100 px-3 py-2 text-xl font-bold tabular-nums text-slate-900">
-              {{ match.gamesWonA }}–{{ match.gamesWonB }}
+              {{ match.scoreA }}–{{ match.scoreB }}
             </div>
             <div [class.font-bold]="match.winnerSide === 'b'" class="break-words text-slate-900">{{ match.teamB }}</div>
           </div>
           <p class="mt-5 border-t border-slate-100 pt-3 text-sm font-semibold text-slate-700">{{ status(match) }}</p>
-          <p class="mt-1 text-xs text-slate-500">First to {{ match.winsRequired }} games wins</p>
         </article>
       }
     </div>

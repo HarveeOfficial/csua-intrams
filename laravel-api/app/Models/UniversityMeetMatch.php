@@ -12,30 +12,26 @@ class UniversityMeetMatch extends Model
         'category',
         'team_a',
         'team_b',
-        'planned_games',
-        'games_won_a',
-        'games_won_b',
+        'score_a',
+        'score_b',
     ];
 
     protected function casts(): array
     {
         return [
             'game_number' => 'integer',
-            'planned_games' => 'integer',
-            'games_won_a' => 'integer',
-            'games_won_b' => 'integer',
+            'score_a' => 'integer',
+            'score_b' => 'integer',
         ];
     }
 
     public function winnerSide(): ?string
     {
-        $winsRequired = intdiv($this->planned_games, 2) + 1;
-
-        if ($this->games_won_a >= $winsRequired) {
+        if ($this->score_a > $this->score_b) {
             return 'a';
         }
 
-        return $this->games_won_b >= $winsRequired ? 'b' : null;
+        return $this->score_b > $this->score_a ? 'b' : null;
     }
 
     public function toPublicPayload(): array
@@ -49,10 +45,8 @@ class UniversityMeetMatch extends Model
             'category' => $this->category,
             'teamA' => $this->team_a,
             'teamB' => $this->team_b,
-            'plannedGames' => $this->planned_games,
-            'gamesWonA' => $this->games_won_a,
-            'gamesWonB' => $this->games_won_b,
-            'winsRequired' => intdiv($this->planned_games, 2) + 1,
+            'scoreA' => $this->score_a,
+            'scoreB' => $this->score_b,
             'winnerSide' => $winnerSide,
             'winner' => $winnerSide === 'a' ? $this->team_a : ($winnerSide === 'b' ? $this->team_b : null),
             'updatedAt' => $this->updated_at?->toIso8601String(),

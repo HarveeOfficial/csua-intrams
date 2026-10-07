@@ -12,9 +12,8 @@ function emptyMatch(): UniversityMeetMatchInput {
     category: 'men',
     team_a: '',
     team_b: '',
-    planned_games: 10,
-    games_won_a: 0,
-    games_won_b: 0,
+    score_a: 0,
+    score_b: 0,
   };
 }
 
@@ -60,9 +59,8 @@ export class UniversityMeetAdmin implements OnInit {
       category: match.category,
       team_a: match.teamA,
       team_b: match.teamB,
-      planned_games: match.plannedGames,
-      games_won_a: match.gamesWonA,
-      games_won_b: match.gamesWonB,
+      score_a: match.scoreA,
+      score_b: match.scoreB,
     };
     this.error.set('');
   }
