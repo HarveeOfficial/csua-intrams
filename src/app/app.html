@@ -9,12 +9,12 @@
         draggable="false"
       />
     </div>
-    <h1 class="hero-title">{{ isUniversityMeetRoute() ? 'University Meet' : 'CSUA Intramurals' }}</h1>
+    <h1 class="hero-title">University Meet</h1>
     <p class="hero-tagline">
       @if (isUniversityMeetRoute()) {
         Match results and games won across the University Meet.
       } @else {
-        Live standings, medals, and event performance tracking for the campus intramural games.
+        Live standings, medals, and event performance tracking for the university meet.
       }
     </p>
 
@@ -289,7 +289,7 @@
 
 <footer class="site-footer">
   <div class="footer-inner">
-    <p class="footer-copyright">&copy; 2026 {{ isUniversityMeetRoute() ? 'University Meet' : 'CSUA Intramurals' }}. All rights reserved.</p>
+    <p class="footer-copyright">&copy; 2026 University Meet. All rights reserved.</p>
 
     <button type="button" class="rate-trigger" (click)="openRatingModal()">
       Rate Us

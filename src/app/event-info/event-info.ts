@@ -27,7 +27,7 @@ export class EventInfo {
   campusSportsOffice = {
     name: 'Campus Sports Office',
     mission:
-      'The Campus Sports Office oversees the planning, coordination, and conduct of the CSUA Intramurals, promoting sportsmanship, wellness, and school spirit among all colleges.',
+      'The Campus Sports Office oversees the planning, coordination, and conduct of the University Meet, promoting sportsmanship, wellness, and school spirit among all colleges.',
     responsibilities: [
       'Organizing and supervising intramural sports and socio-cultural events',
       'Setting and enforcing competition rules and scoring guidelines',
